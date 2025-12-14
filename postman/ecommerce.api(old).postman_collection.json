@@ -1,0 +1,510 @@
+{
+	"info": {
+		"_postman_id": "cc2cf9a8-4b06-4136-b25c-8fbd2332e7d0",
+		"name": "ecommerce.api(old)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46308062",
+		"_collection_link": "https://www.postman.com/dark-water-764933/workspace/test/collection/46308062-cc2cf9a8-4b06-4136-b25c-8fbd2332e7d0?action=share&source=collection_link&creator=46308062"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "/api/Users/create-user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"vidid86453@alexida.com\",\r\n  \"email\": \"vidid86453@alexida.com\",\r\n  \"password\": \"vidid86453@alexida.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://e-shop-xi-vert.vercel.app/api/v2/user/create-user",
+							"protocol": "https",
+							"host": [
+								"e-shop-xi-vert",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v2",
+								"user",
+								"create-user"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "/api/Users/create-user",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"vidid86453@alexida.com\",\r\n  \"email\": \"vidid86453@alexida.com\",\r\n  \"password\": \"vidid86453@alexida.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://e-shop-xi-vert.vercel.app/api/v2/user/create-user",
+									"protocol": "https",
+									"host": [
+										"e-shop-xi-vert",
+										"vercel",
+										"app"
+									],
+									"path": [
+										"api",
+										"v2",
+										"user",
+										"create-user"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "https://e-shop-njoh.vercel.app"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Length",
+									"value": "103"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 14 Dec 2025 14:26:00 GMT"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"67-xud0CLrlNWYEn8MbI3dCm8bcKnY\""
+								},
+								{
+									"key": "Server",
+									"value": "Vercel"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains; preload"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "X-Vercel-Cache",
+									"value": "MISS"
+								},
+								{
+									"key": "X-Vercel-Id",
+									"value": "bom1::iad1::gcx47-1765722360064-7b02b7fc4808"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"please check your email:- vidid86453@alexida.com to activate your account!\"\n}"
+						}
+					]
+				},
+				{
+					"name": "activation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"activation_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidmlkaWQ4NjQ1M0BhbGV4aWRhLmNvbSIsImVtYWlsIjoieG90aWRvNzk2N0BhbGV4aWRhLmNvbSIsInBhc3N3b3JkIjoieG90aWRvNzk2N0BhbGV4aWRhLmNvbSIsImF2YXRhciI6e30sImlhdCI6MTc2NTcyMjk5MywiZXhwIjoxNzY1NzIzMjkzfQ.NlUjEL_JaMCQO6_pyu4dKlg7rw_pCq7uMftSkkVxOEI\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://e-shop-xi-vert.vercel.app/api/v2/user/activation",
+							"protocol": "https",
+							"host": [
+								"e-shop-xi-vert",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v2",
+								"user",
+								"activation"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "activation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"activation_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidmlkaWQ4NjQ1M0BhbGV4aWRhLmNvbSIsImVtYWlsIjoidmlkaWQ4NjQ1M0BhbGV4aWRhLmNvbSIsInBhc3N3b3JkIjoidmlkaWQ4NjQ1M0BhbGV4aWRhLmNvbSIsImF2YXRhciI6e30sImlhdCI6MTc2NTcyMDk4NCwiZXhwIjoxNzY1NzIxMjg0fQ.AQ4A9TM2yhMwjOPaR7WahMw4feugfX5nxYfvC5-3fN4\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://e-shop-xi-vert.vercel.app/api/v2/user/activation",
+									"protocol": "https",
+									"host": [
+										"e-shop-xi-vert",
+										"vercel",
+										"app"
+									],
+									"path": [
+										"api",
+										"v2",
+										"user",
+										"activation"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "https://e-shop-njoh.vercel.app"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Length",
+									"value": "41"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 14 Dec 2025 14:31:50 GMT"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"29-22BZxpR9IqSn4sD2CWJraYc/Emw\""
+								},
+								{
+									"key": "Server",
+									"value": "Vercel"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains; preload"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "X-Vercel-Cache",
+									"value": "MISS"
+								},
+								{
+									"key": "X-Vercel-Id",
+									"value": "bom1::iad1::hhzvh-1765722710579-1d22106d7594"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"jwt expired\"\n}"
+						},
+						{
+							"name": "activation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"activation_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidmlkaWQ4NjQ1M0BhbGV4aWRhLmNvbSIsImVtYWlsIjoieG90aWRvNzk2N0BhbGV4aWRhLmNvbSIsInBhc3N3b3JkIjoieG90aWRvNzk2N0BhbGV4aWRhLmNvbSIsImF2YXRhciI6e30sImlhdCI6MTc2NTcyMjk5MywiZXhwIjoxNzY1NzIzMjkzfQ.NlUjEL_JaMCQO6_pyu4dKlg7rw_pCq7uMftSkkVxOEI\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://e-shop-xi-vert.vercel.app/api/v2/user/activation",
+									"protocol": "https",
+									"host": [
+										"e-shop-xi-vert",
+										"vercel",
+										"app"
+									],
+									"path": [
+										"api",
+										"v2",
+										"user",
+										"activation"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "https://e-shop-njoh.vercel.app"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Length",
+									"value": "198"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 14 Dec 2025 14:37:02 GMT"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"c6-9LIUQjkxDSPZ+Gz1aPap+/DOt+o\""
+								},
+								{
+									"key": "Server",
+									"value": "Vercel"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains; preload"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "X-Vercel-Cache",
+									"value": "MISS"
+								},
+								{
+									"key": "X-Vercel-Id",
+									"value": "bom1::iad1::2dpn7-1765723021581-70ba30bef410"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5M2VjYjhkMGY2ZTZhMDIyMzJmODZiYiIsImlhdCI6MTc2NTcyMzAyMiwiZXhwIjoxNzY2MzI3ODIyfQ.j5nLxs1oISekkjdJiLCrFh6EQcg97LlL-0n38N-BKLg\"\n}"
+						}
+					]
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"xotido7967@alexida.com\",\r\n    \"password\": \"xotido7967@alexida.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://e-shop-xi-vert.vercel.app/api/v2/user/login-user",
+							"protocol": "https",
+							"host": [
+								"e-shop-xi-vert",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v2",
+								"user",
+								"login-user"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"xotido7967@alexida.com\",\r\n    \"password\": \"xotido7967@alexida.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://e-shop-xi-vert.vercel.app/api/v2/user/login-user",
+									"protocol": "https",
+									"host": [
+										"e-shop-xi-vert",
+										"vercel",
+										"app"
+									],
+									"path": [
+										"api",
+										"v2",
+										"user",
+										"login-user"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "https://e-shop-njoh.vercel.app"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Length",
+									"value": "455"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 14 Dec 2025 14:39:21 GMT"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"1c7-7T+VDVXiDmQ0ELuqeFJ1E5sy1gw\""
+								},
+								{
+									"key": "Server",
+									"value": "Vercel"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5M2VjYjhkMGY2ZTZhMDIyMzJmODZiYiIsImlhdCI6MTc2NTcyMzE2MSwiZXhwIjoxNzY2MzI3OTYxfQ.u2DsVrL4LpybbMfh2zGJBLn2VfMHhkmMy_e8REFjVx8; Path=/; Expires=Sat, 14 Mar 2026 14:39:21 GMT; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains; preload"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "X-Vercel-Cache",
+									"value": "MISS"
+								},
+								{
+									"key": "X-Vercel-Id",
+									"value": "bom1::iad1::v6n8x-1765723161255-86009410dce0"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"user\": {\n        \"_id\": \"693ecb8d0f6e6a02232f86bb\",\n        \"name\": \"vidid86453@alexida.com\",\n        \"email\": \"xotido7967@alexida.com\",\n        \"password\": \"$2a$10$Fli49xJqGugkm3t/PRQ9xe70IgnfzLLjAc1mrRuuI5EGs5eU0/yfy\",\n        \"role\": \"user\",\n        \"createdAt\": \"2025-12-14T14:23:20.429Z\",\n        \"addresses\": [],\n        \"__v\": 0\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5M2VjYjhkMGY2ZTZhMDIyMzJmODZiYiIsImlhdCI6MTc2NTcyMzE2MSwiZXhwIjoxNzY2MzI3OTYxfQ.u2DsVrL4LpybbMfh2zGJBLn2VfMHhkmMy_e8REFjVx8\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

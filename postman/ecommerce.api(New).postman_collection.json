@@ -1,0 +1,103 @@
+{
+	"info": {
+		"_postman_id": "f46c7a7c-8c07-4744-b349-96d38476d02a",
+		"name": "ecommerce.api(New)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46308062",
+		"_collection_link": "https://www.postman.com/dark-water-764933/workspace/test/collection/46308062-f46c7a7c-8c07-4744-b349-96d38476d02a?action=share&source=collection_link&creator=46308062"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "/api/Users/create-user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Manish\",\r\n  \"email\": \"manish@gmail.com\",\r\n  \"password\": \"Manish\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7252/api/Users/create-user",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7252",
+							"path": [
+								"api",
+								"Users",
+								"create-user"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Manish\",\r\n  \"email\": \"manish@gmail.com\",\r\n  \"password\": \"Manish\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7252/api/Users/create-user",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7252",
+									"path": [
+										"api",
+										"Users",
+										"create-user"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 14 Dec 2025 14:18:36 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Location",
+									"value": "https://localhost:7252/api/Users/create-user?id=52b17ced-63b4-4463-ac2c-97989b82b0ce"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Please check your email: manish@gmail.com to activate your account!\",\n    \"user\": {\n        \"id\": \"52b17ced-63b4-4463-ac2c-97989b82b0ce\",\n        \"name\": \"Manish\",\n        \"email\": \"manish@gmail.com\",\n        \"role\": \"user\",\n        \"avatar\": null,\n        \"createdAt\": \"2025-12-14T14:18:37.3329705Z\",\n        \"isActive\": false\n    }\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
