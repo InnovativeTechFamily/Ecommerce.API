@@ -1,13 +1,14 @@
-﻿using Ecommerce.API.Data;
-using Ecommerce.API.DTOs.User;
-using Ecommerce.API.Entities.Users;
-using Ecommerce.API.Exceptions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Ecommerce.API.Data;
+using Ecommerce.API.DTOs.User;
+using Ecommerce.API.Entities.Users;
+using Ecommerce.API.Exceptions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Ecommerce.API.Services
 {
@@ -39,18 +40,16 @@ namespace Ecommerce.API.Services
                 throw new BadRequestException("User already exists");
             }
 
-            // Hash password
-            var passwordHash = HashPassword(userDto.Password);
-
-            var user = new User
+			
+			var user = new User
             {
                 Id = Guid.NewGuid(),
                 Name = userDto.Name,
                 Email = userDto.Email,
-                PasswordHash = passwordHash,
-                CreatedAt = DateTime.UtcNow,
+				PasswordHash =HashPassword(userDto.Password),
+				CreatedAt = DateTime.UtcNow,
                 Role = "user",
-                IsActive = false
+                IsActive = true
             };
 
             // Handle avatar if provided
@@ -80,14 +79,12 @@ namespace Ecommerce.API.Services
             return MapToUserResponseDto(user);
         }
 
-        private string HashPassword(string password)
-        {
-            using var hmac = new HMACSHA512();
-            var passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(passwordHash);
-        }
+		public static string HashPassword(string password)
+		{
+			return BCrypt.Net.BCrypt.HashPassword(password);
+		}
 
-        public async Task<string> GenerateActivationToken(User user)
+		public async Task<string> GenerateActivationToken(User user)
         {
             var token = Guid.NewGuid().ToString();
             var tokenHash = HashPassword(token);
@@ -141,22 +138,33 @@ namespace Ecommerce.API.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public bool VerifyPassword(string password, string passwordHash)
-        {
-            var storedHash = Convert.FromBase64String(passwordHash);
+		public static bool VerifyPassword(string password, string hashedPassword)
+		{
+			return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+		}
 
-            using var hmac = new HMACSHA512();
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+		public async Task<bool> VerifyLoginUser(UserLoginDto userLoginDto)
+		{
+			var user = await _context.Users
+				.FirstOrDefaultAsync(u => u.Email == userLoginDto.Email);
 
-            for (int i = 0; i < computedHash.Length; i++)
-            {
-                if (computedHash[i] != storedHash[i])
-                    return false;
-            }
-            return true;
-        }
+			if (user == null)
+				throw new BadRequestException("User does not exist");
 
-        private UserResponseDto MapToUserResponseDto(User user)
+			if (!user.IsActive)
+				throw new BadRequestException("Account is inactive");
+
+			bool isPasswordValid = VerifyPassword(
+				userLoginDto.Password,
+				user.PasswordHash
+			);
+
+			if (!isPasswordValid)
+				throw new BadRequestException("Invalid email or password");
+
+			return true;
+		}
+		private UserResponseDto MapToUserResponseDto(User user)
         {
             return new UserResponseDto
             {

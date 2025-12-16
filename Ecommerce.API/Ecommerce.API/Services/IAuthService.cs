@@ -9,7 +9,7 @@ namespace Ecommerce.API.Services
         Task<UserResponseDto> CreateUserAsync(UserCreateDto userDto);
         Task<string> GenerateActivationToken(User user);
         string GenerateJwtToken(User user);
-        bool VerifyPassword(string password, string passwordHash);
+		Task<bool> VerifyLoginUser(UserLoginDto loginDto);
     }
 
 

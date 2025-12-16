@@ -52,5 +52,24 @@ namespace Ecommerce.API.Controllers
                 });
             }
         }
-    }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] UserLoginDto loginDto)
+        {
+            var isValidUser = await _authService.VerifyLoginUser(loginDto);
+			if (!isValidUser)
+            {
+                return Unauthorized(new
+                {
+                    success = false,
+                    message = "Invalid email or password."
+                });
+			}
+			return Ok( new{
+                success = true,
+                message = "Login successful."
+
+			});
+		}
+	}
 }
