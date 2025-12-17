@@ -1,7 +1,7 @@
-﻿using Ecommerce.API.Entities.Users;
+﻿
+using Ecommerce.API.Entities.Products;
+using Ecommerce.API.Entities.Users;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace Ecommerce.API.Data
 {
@@ -16,7 +16,9 @@ namespace Ecommerce.API.Data
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Avatar> Avatars { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		public DbSet<Product> Products { get; set; }
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -46,6 +48,21 @@ namespace Ecommerce.API.Data
                       .HasForeignKey<Avatar>(a => a.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
-        }
+
+            // Configure Product entity
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.HasIndex(p => p.Category);
+                entity.HasIndex(p => p.ShopId);
+                entity.HasIndex(p => p.Status);
+
+                entity.Property(p => p.OriginalPrice)
+                    .HasPrecision(18, 2);
+
+                entity.Property(p => p.DiscountPrice)
+                    .HasPrecision(18, 2);
+
+            });
+		}
     }
 }

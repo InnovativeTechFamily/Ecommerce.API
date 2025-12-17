@@ -17,7 +17,11 @@ builder.Services.AddOpenApi();
 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 //builder.Services.AddScoped<IEmailService, EmailService>(); // Implement IEmailService
+
+// Add this line for service registrations
+builder.Services.AddScoped<IProductService, ProductService>();
 
 // Add CORS
 builder.Services.AddCors(options =>
