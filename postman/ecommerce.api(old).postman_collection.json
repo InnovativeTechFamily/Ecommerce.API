@@ -478,12 +478,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://e-shop-xi-vert.vercel.app/api/v2/user/getuser",
-							"protocol": "https",
+							"raw": "{{base_url}}/api/v2/user/getuser",
 							"host": [
-								"e-shop-xi-vert",
-								"vercel",
-								"app"
+								"{{base_url}}"
 							],
 							"path": [
 								"api",
@@ -592,12 +589,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://e-shop-xi-vert.vercel.app/api/v2/product/get-all-products?page=1&limit=10",
-							"protocol": "https",
+							"raw": "{{base_url}}/api/v2/product/get-all-products?page=1&limit=10",
 							"host": [
-								"e-shop-xi-vert",
-								"vercel",
-								"app"
+								"{{base_url}}"
 							],
 							"path": [
 								"api",
@@ -725,12 +719,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://e-shop-xi-vert.vercel.app/api/v2/event/get-all-events",
-							"protocol": "https",
+							"raw": "{{base_url}}}/api/v2/event/get-all-events",
 							"host": [
-								"e-shop-xi-vert",
-								"vercel",
-								"app"
+								"{{base_url}}}"
 							],
 							"path": [
 								"api",
@@ -951,7 +942,6 @@
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
-				"requests": {},
 				"exec": [
 					""
 				]
@@ -962,7 +952,6 @@
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
-				"requests": {},
 				"exec": [
 					""
 				]
@@ -972,8 +961,7 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "",
-			"type": "default"
+			"value": "https://e-shop-xi-vert.vercel.app"
 		}
 	]
 }
