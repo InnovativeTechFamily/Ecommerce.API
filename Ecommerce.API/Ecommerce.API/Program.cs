@@ -1,4 +1,5 @@
 using Ecommerce.API.Data;
+using Ecommerce.API.DTOs;
 using Ecommerce.API.DTOs.Cloudinary;
 using Ecommerce.API.Middleware;
 using Ecommerce.API.Services;
@@ -20,7 +21,7 @@ builder.Services.AddSwaggerGen();
 // Configure Cloudinary
 builder.Services.Configure<CloudinarySettings>(
     builder.Configuration.GetSection("Cloudinary"));
-
+    
 // Add DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -83,6 +84,9 @@ builder.Services.AddCors(options =>
 
 // Add Logging
 builder.Services.AddLogging();
+
+// register and validate EmailSettings
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 
 var app = builder.Build();
