@@ -2,7 +2,7 @@
 
 namespace Ecommerce.API.DTOs.User
 {
-	public class UserLoginDto
+	public class LoginDto
 	{
 
 		[Required(ErrorMessage = "Please enter your email!")]

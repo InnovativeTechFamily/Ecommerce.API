@@ -13,7 +13,7 @@ namespace Ecommerce.API.Data
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Address> Addresses { get; set; }
+        public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<Avatar> Avatars { get; set; }
 
 		public DbSet<Product> Products { get; set; }
@@ -28,26 +28,19 @@ namespace Ecommerce.API.Data
                 entity.HasIndex(u => u.Email).IsUnique();
                 entity.Property(u => u.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
                 entity.Property(u => u.Role).HasDefaultValue("user");
-                entity.Property(u => u.IsActive).HasDefaultValue(false);
+
+                entity.HasMany(u => u.Addresses)
+                   .WithOne(a => a.User)
+                   .HasForeignKey(a => a.UserId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(u => u.Avatar)
+                    .WithOne(a => a.User)
+                    .HasForeignKey<Avatar>(a => a.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Address configuration
-            modelBuilder.Entity<Address>(entity =>
-            {
-                entity.HasOne(a => a.User)
-                      .WithMany(u => u.Addresses)
-                      .HasForeignKey(a => a.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            // Avatar configuration (one-to-one with User)
-            modelBuilder.Entity<Avatar>(entity =>
-            {
-                entity.HasOne(a => a.User)
-                      .WithOne(u => u.Avatar)
-                      .HasForeignKey<Avatar>(a => a.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+           
 
             // Configure Product entity
             modelBuilder.Entity<Product>(entity =>

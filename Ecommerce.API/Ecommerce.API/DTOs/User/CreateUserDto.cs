@@ -2,7 +2,7 @@
 
 namespace Ecommerce.API.DTOs.User
 {
-    public class UserCreateDto
+    public class CreateUserDto
     {
         [Required(ErrorMessage = "Please enter your name!")]
         public string Name { get; set; }
