@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "cc2cf9a8-4b06-4136-b25c-8fbd2332e7d0",
+		"_postman_id": "b5c1c9dd-d51d-42fb-9ea6-8f0122b3249c",
 		"name": "ecommerce.api(old)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "46308062",
-		"_collection_link": "https://www.postman.com/dark-water-764933/workspace/test/collection/46308062-cc2cf9a8-4b06-4136-b25c-8fbd2332e7d0?action=share&source=collection_link&creator=46308062"
+		"_exporter_id": "35032516"
 	},
 	"item": [
 		{
@@ -73,7 +72,7 @@
 							},
 							"status": "Created",
 							"code": 201,
-							"_postman_previewlanguage": "",
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "Access-Control-Allow-Credentials",
@@ -196,7 +195,7 @@
 							},
 							"status": "Internal Server Error",
 							"code": 500,
-							"_postman_previewlanguage": null,
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "Access-Control-Allow-Credentials",
@@ -286,7 +285,7 @@
 							},
 							"status": "Created",
 							"code": 201,
-							"_postman_previewlanguage": "",
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "Access-Control-Allow-Credentials",
@@ -409,7 +408,7 @@
 							},
 							"status": "Created",
 							"code": 201,
-							"_postman_previewlanguage": "",
+							"_postman_previewlanguage": "Text",
 							"header": [
 								{
 									"key": "Access-Control-Allow-Credentials",
@@ -470,6 +469,476 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"success\": true,\n    \"user\": {\n        \"_id\": \"693ecb8d0f6e6a02232f86bb\",\n        \"name\": \"vidid86453@alexida.com\",\n        \"email\": \"xotido7967@alexida.com\",\n        \"password\": \"$2a$10$Fli49xJqGugkm3t/PRQ9xe70IgnfzLLjAc1mrRuuI5EGs5eU0/yfy\",\n        \"role\": \"user\",\n        \"createdAt\": \"2025-12-14T14:23:20.429Z\",\n        \"addresses\": [],\n        \"__v\": 0\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5M2VjYjhkMGY2ZTZhMDIyMzJmODZiYiIsImlhdCI6MTc2NTcyMzE2MSwiZXhwIjoxNzY2MzI3OTYxfQ.u2DsVrL4LpybbMfh2zGJBLn2VfMHhkmMy_e8REFjVx8\"\n}"
+						}
+					]
+				},
+				{
+					"name": "getuser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://e-shop-xi-vert.vercel.app/api/v2/user/getuser",
+							"protocol": "https",
+							"host": [
+								"e-shop-xi-vert",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v2",
+								"user",
+								"getuser"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://e-shop-xi-vert.vercel.app/api/v2/user/getuser",
+									"protocol": "https",
+									"host": [
+										"e-shop-xi-vert",
+										"vercel",
+										"app"
+									],
+									"path": [
+										"api",
+										"v2",
+										"user",
+										"getuser"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "https://e-shop-njoh.vercel.app"
+								},
+								{
+									"key": "Age",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Length",
+									"value": "54"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 21 Dec 2025 07:24:48 GMT"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"36-6ZY9C4Va3ZnY0eh+QZKPcP6gyVw\""
+								},
+								{
+									"key": "Server",
+									"value": "Vercel"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains; preload"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "X-Vercel-Cache",
+									"value": "MISS"
+								},
+								{
+									"key": "X-Vercel-Id",
+									"value": "bom1::iad1::j4zzr-1766301888848-21cf80649456"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Please login to continue\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "product",
+			"item": [
+				{
+					"name": "get-all-product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://e-shop-xi-vert.vercel.app/api/v2/product/get-all-products?page=1&limit=10",
+							"protocol": "https",
+							"host": [
+								"e-shop-xi-vert",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v2",
+								"product",
+								"get-all-products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://e-shop-xi-vert.vercel.app/api/v2/product/get-all-products?page=1&limit=10",
+									"protocol": "https",
+									"host": [
+										"e-shop-xi-vert",
+										"vercel",
+										"app"
+									],
+									"path": [
+										"api",
+										"v2",
+										"product",
+										"get-all-products"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "https://e-shop-njoh.vercel.app"
+								},
+								{
+									"key": "Age",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 21 Dec 2025 07:23:05 GMT"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"3d01-lYu/cTTcz6WK9Ie6wb81Nn61JXA\""
+								},
+								{
+									"key": "Server",
+									"value": "Vercel"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains; preload"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "X-Vercel-Cache",
+									"value": "MISS"
+								},
+								{
+									"key": "X-Vercel-Id",
+									"value": "bom1::iad1::w2d7z-1766301784701-e22de349b61d"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"products\": [\n        {\n            \"_id\": \"66079febd575227d1318358a\",\n            \"name\": \"Samsung Galaxy S24 Ultra 5G AI Smartphone.jpg\",\n            \"description\": \"8 GB RAM | 128 GB ROM\\n16.71 cm (6.58 inch) Full HD+ Display\\n50MP + 2MP | 8MP Front Camera\\n5000 mAh Battery\\nMediatek Dimensity 6020 Processor\\n1 Year of Device & 6 Months for Inbox Accessories\",\n            \"category\": \"Mobile and Tablets\",\n            \"tags\": \"Phone,Mobile\",\n            \"originalPrice\": 300,\n            \"discountPrice\": 290,\n            \"stock\": 19,\n            \"images\": [\n                {\n                    \"public_id\": \"products/qjdsivz0ako8doggtvlv\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1711775722/products/qjdsivz0ako8doggtvlv.jpg\",\n                    \"_id\": \"66079febd575227d1318358b\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"delhi\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 110096,\n                \"availableBalance\": 17.91,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-03-30T04:53:29.957Z\",\n            \"reviews\": [],\n            \"__v\": 0,\n            \"isPublished\": true,\n            \"status\": 2\n        },\n        {\n            \"_id\": \"6607a069d575227d1318366b\",\n            \"name\": \"Redmi 12 5G \",\n            \"description\": \"Redmi 12 5G Moonstone Silver 4GB RAM 128GB ROM\",\n            \"category\": \"Mobile and Tablets\",\n            \"tags\": \"Phone,Mobile\",\n            \"originalPrice\": 150,\n            \"discountPrice\": 140,\n            \"stock\": 11,\n            \"images\": [\n                {\n                    \"public_id\": \"products/tnslulxvgknq75f4rd7c\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1711775848/products/tnslulxvgknq75f4rd7c.jpg\",\n                    \"_id\": \"6607a069d575227d1318366c\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"delhi\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 110096,\n                \"availableBalance\": 17.91,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-03-30T04:53:29.957Z\",\n            \"reviews\": [],\n            \"__v\": 0,\n            \"isPublished\": true,\n            \"status\": 2\n        },\n        {\n            \"_id\": \"65f2a1ded53163b63fc3ef09\",\n            \"name\": \"LI-NING Windstorm Nano 73 Professional Badminton Racquet\",\n            \"description\": \"Lightweight just got a new word in the dictionary and its the Li-Ning windstorm series. The Windstorm technology included in the Windstorm Nano 73 delivers a feather-like 73-gram weight and makes this racket flag bearer of speed and control. \\n\",\n            \"category\": \"Music and Gaming\",\n            \"tags\": \" Professional Badminton \",\n            \"originalPrice\": 3999,\n            \"discountPrice\": 2999,\n            \"stock\": 199,\n            \"images\": [\n                {\n                    \"public_id\": \"products/txxfqlcm2cercfjmaj9o\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710399965/products/txxfqlcm2cercfjmaj9o.jpg\",\n                    \"_id\": \"65f2a1ded53163b63fc3ef0a\"\n                },\n                {\n                    \"public_id\": \"products/oewqdt2eamgyvqau7qnm\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710399965/products/oewqdt2eamgyvqau7qnm.jpg\",\n                    \"_id\": \"65f2a1ded53163b63fc3ef0b\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"noida\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 201304,\n                \"availableBalance\": 89098.02,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-03-14T06:49:35.880Z\",\n            \"reviews\": [],\n            \"__v\": 0,\n            \"isPublished\": true,\n            \"status\": 2\n        },\n        {\n            \"_id\": \"65f29c6b944205d475a2ab19\",\n            \"name\": \"Kesh King Scalp and Medicinal Ayurvedic Hair Oil  (100 ml)\",\n            \"description\": \"Kesh King ayurvedic oil is a proprietary medicinal preparation without any side effects. It is a complete solution for hair related problems especially hair fall. It is prepared using tel pak vidhi as prescribed in ayurveda using 21 precious herbs cooked in sesame oil\\n\",\n            \"category\": \"cosmetics and body care\",\n            \"tags\": \"kesh king oil\",\n            \"originalPrice\": 499,\n            \"discountPrice\": 299,\n            \"stock\": 99,\n            \"images\": [\n                {\n                    \"public_id\": \"products/wk01bvlgtmepsrikfdcr\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710398570/products/wk01bvlgtmepsrikfdcr.jpg\",\n                    \"_id\": \"65f29c6b944205d475a2ab1a\"\n                },\n                {\n                    \"public_id\": \"products/kixtl3i0eswbnoiktrqk\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710398571/products/kixtl3i0eswbnoiktrqk.jpg\",\n                    \"_id\": \"65f29c6b944205d475a2ab1b\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"noida\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 201304,\n                \"availableBalance\": 89098.02,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-03-14T06:37:45.798Z\",\n            \"reviews\": [],\n            \"__v\": 0,\n            \"isPublished\": true,\n            \"status\": 2\n        },\n        {\n            \"_id\": \"65f299631f566fe2baf9b5a0\",\n            \"name\": \"GARNIER Skin Naturals Bright Complete Brightening Face Wash  (200 g)\",\n            \"description\": \"Garnier Bright Complete is a womens facewash enriched with Yuzu Lemon essence. Yuzu Lemon is known as the King of Lemons since it contains a high concentration of Vitamin C and is known for its strong brightening, exfoliating and anti-oxidant properties. \\n\",\n            \"category\": \"cosmetics and body care\",\n            \"tags\": \"women facewash\",\n            \"originalPrice\": 298,\n            \"discountPrice\": 200,\n            \"stock\": 99,\n            \"images\": [\n                {\n                    \"public_id\": \"products/jve5zuxu9rad4ouhcmao\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710397794/products/jve5zuxu9rad4ouhcmao.jpg\",\n                    \"_id\": \"65f299631f566fe2baf9b5a1\"\n                },\n                {\n                    \"public_id\": \"products/fe4xrehthf1wqogl7ikp\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710397794/products/fe4xrehthf1wqogl7ikp.jpg\",\n                    \"_id\": \"65f299631f566fe2baf9b5a2\"\n                },\n                {\n                    \"public_id\": \"products/rxuhoveuaidaxgf0l3l6\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710397795/products/rxuhoveuaidaxgf0l3l6.jpg\",\n                    \"_id\": \"65f299631f566fe2baf9b5a3\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"noida\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 201304,\n                \"availableBalance\": 89098.02,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-03-14T06:19:30.271Z\",\n            \"reviews\": [],\n            \"__v\": 0,\n            \"isPublished\": true,\n            \"status\": 2\n        },\n        {\n            \"_id\": \"65f29830635cf9b6bda992ee\",\n            \"name\": \"NIVEA Men Face Wash, Deep Impact Intense Clean, for Beard & Face, with Black Carbon, 100 g\",\n            \"description\": \"NIVEA Men Face Wash Complete is a men facewash enriched with Yuzu Lemon essence. Yuzu Lemon is known as the King of Lemons since it contains a high concentration of Vitamin C and is known for its strong brightening, exfoliating and anti-oxidant properties. \\n\",\n            \"category\": \"cosmetics and body care\",\n            \"tags\": \"Face Wash\",\n            \"originalPrice\": 350,\n            \"discountPrice\": 249,\n            \"stock\": 100,\n            \"images\": [\n                {\n                    \"public_id\": \"products/n8nh9onorvvvfhfi8w68\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710397487/products/n8nh9onorvvvfhfi8w68.jpg\",\n                    \"_id\": \"65f29830635cf9b6bda992ef\"\n                },\n                {\n                    \"public_id\": \"products/h5ydodhvkxmanm22gqdx\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710397487/products/h5ydodhvkxmanm22gqdx.jpg\",\n                    \"_id\": \"65f29830635cf9b6bda992f0\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"noida\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 201304,\n                \"availableBalance\": 89098.02,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-03-14T06:19:16.683Z\",\n            \"reviews\": [],\n            \"__v\": 0,\n            \"isPublished\": true,\n            \"status\": 2\n        },\n        {\n            \"_id\": \"65f294bf0c467a3bc8929f43\",\n            \"name\": \"Clean & Clear Face Wash  (450 ml)\",\n            \"description\": \"Clean & Clear Foaming Face Wash helps prevent oily skin and pimples. Its rich foam gently cleanses to remove dirt without drying your skin. It is specially designed unique formulation cleanses skin thoroughly preventing common skin problems. Gentle enough to use every day, it leaves your skin feeling clean and beautifully clear.\\n\",\n            \"category\": \"cosmetics and body care\",\n            \"tags\": \"clean & clear face wash\",\n            \"originalPrice\": 300,\n            \"discountPrice\": 150,\n            \"stock\": 100,\n            \"images\": [\n                {\n                    \"public_id\": \"products/kiz9iulnabp3rbkqj2ss\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710396606/products/kiz9iulnabp3rbkqj2ss.jpg\",\n                    \"_id\": \"65f294bf0c467a3bc8929f44\"\n                },\n                {\n                    \"public_id\": \"products/pxnke365gngxdscleldj\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710396607/products/pxnke365gngxdscleldj.jpg\",\n                    \"_id\": \"65f294bf0c467a3bc8929f45\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"noida\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 201304,\n                \"availableBalance\": 89098.02,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-03-14T06:01:21.121Z\",\n            \"reviews\": [],\n            \"__v\": 0,\n            \"isPublished\": true,\n            \"status\": 2\n        },\n        {\n            \"_id\": \"65f29dfd0c467a3bc892a0d1\",\n            \"name\": \"SET WET Cool, Charm and Swag Avatar Deodorant Spray - For Men  (450 ml, Pack of 3)\",\n            \"description\": \" Kickstart your day with the masculine and refreshing fragrances of this Set Wet deo set. It contains the Set Wet Cool Avatar, Charm Avatar and Swag Avatar. Spritz on a few drops of any deo from this pack according to your mood and get ready to take on the world.\\n\",\n            \"category\": \"cosmetics and body care\",\n            \"tags\": \"set wet  perfume\",\n            \"originalPrice\": 300,\n            \"discountPrice\": 199,\n            \"stock\": 99,\n            \"images\": [\n                {\n                    \"public_id\": \"products/nr5dywgm9bd5swmo0rdg\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710398972/products/nr5dywgm9bd5swmo0rdg.jpg\",\n                    \"_id\": \"65f29dfd0c467a3bc892a0d2\"\n                },\n                {\n                    \"public_id\": \"products/bf2uj5w609j0qg2vfaat\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710398972/products/bf2uj5w609j0qg2vfaat.jpg\",\n                    \"_id\": \"65f29dfd0c467a3bc892a0d3\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"noida\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 201304,\n                \"availableBalance\": 89098.02,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-03-14T06:01:21.121Z\",\n            \"reviews\": [],\n            \"__v\": 0,\n            \"isPublished\": true,\n            \"status\": 2\n        },\n        {\n            \"_id\": \"65f296e2280c7ffeeb0e597c\",\n            \"name\": \"Epson L3100 Multi-function Color Printer  (Black, Ink Tank) \",\n            \"description\": \"Similar features as Epson L3110, Epson L3101 printer Printer Type - Ink Tank; Functionality - All-in-One (Print, Scan, Copy) , Scanner type - Flatbed; Printer Output\\n\",\n            \"category\": \"Computers and Laptops\",\n            \"tags\": \"color printer\",\n            \"originalPrice\": 6000,\n            \"discountPrice\": 2999,\n            \"stock\": 199,\n            \"images\": [\n                {\n                    \"public_id\": \"products/da2a0tfvth3vgc0udasf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710397153/products/da2a0tfvth3vgc0udasf.jpg\",\n                    \"_id\": \"65f296e2280c7ffeeb0e597d\"\n                },\n                {\n                    \"public_id\": \"products/idlyvwharvcfdl7sdy0q\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710397153/products/idlyvwharvcfdl7sdy0q.jpg\",\n                    \"_id\": \"65f296e2280c7ffeeb0e597e\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"noida\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 201304,\n                \"availableBalance\": 89098.02,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-03-14T06:01:21.071Z\",\n            \"reviews\": [],\n            \"__v\": 0,\n            \"isPublished\": true,\n            \"status\": 2\n        },\n        {\n            \"_id\": \"65f292aebbc858543332345b\",\n            \"name\": \"NLG-428-BLUE-BLU All Blue Boys Series Analog Watch - For Men \",\n            \"description\": \"Celeron N4020/4GB/64GB SSD/Chrome OS/Integrated Graphics, Ceremic White, 35.6 cm (14 inch)\\n\",\n            \"category\": \"Computers and Laptops\",\n            \"tags\": \"watch\",\n            \"originalPrice\": 2000,\n            \"discountPrice\": 499,\n            \"stock\": 199,\n            \"images\": [\n                {\n                    \"public_id\": \"products/sbeijnhzyqdvtqybwizh\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710396078/products/sbeijnhzyqdvtqybwizh.jpg\",\n                    \"_id\": \"65f292aebbc858543332345c\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"noida\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 201304,\n                \"availableBalance\": 89098.02,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-03-14T05:54:24.617Z\",\n            \"reviews\": [],\n            \"__v\": 0,\n            \"isPublished\": true,\n            \"status\": 2\n        }\n    ],\n    \"productCount\": 29\n}"
+						}
+					]
+				},
+				{
+					"name": "get-all-events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://e-shop-xi-vert.vercel.app/api/v2/event/get-all-events",
+							"protocol": "https",
+							"host": [
+								"e-shop-xi-vert",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v2",
+								"event",
+								"get-all-events"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://e-shop-xi-vert.vercel.app/api/v2/event/get-all-events",
+									"protocol": "https",
+									"host": [
+										"e-shop-xi-vert",
+										"vercel",
+										"app"
+									],
+									"path": [
+										"api",
+										"v2",
+										"event",
+										"get-all-events"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "https://e-shop-njoh.vercel.app"
+								},
+								{
+									"key": "Age",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Length",
+									"value": "10456"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 21 Dec 2025 07:26:20 GMT"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"28d8-Nrjf+n+sWqwpGYGqxjnGuRNoTmY\""
+								},
+								{
+									"key": "Server",
+									"value": "Vercel"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains; preload"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "X-Vercel-Cache",
+									"value": "MISS"
+								},
+								{
+									"key": "X-Vercel-Id",
+									"value": "bom1::iad1::vzpt8-1766301980140-a57fc89bce79"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"events\": [\n        {\n            \"_id\": \"65ed989c24e85e76f3f8baf8\",\n            \"name\": \"SAMSUNG Galaxy A52 (Awesome Blue, 128 GB)\",\n            \"description\": \"Bring home the Samsung Galaxy A52 smartphone to enjoy viewing sharp visuals, click clear images, record stable videos, and do more. Its rear camera setup, with OIS, helps you capture clear shots. While its 16.40 cm (6.5) FHD+ Super AMOLED display delivers vivid visuals, the Eye Comfort Shield ensures reduced blue light emissions, thereby preventing eye strain.\\n\",\n            \"category\": \"Mobile and Tablets\",\n            \"start_Date\": \"2024-03-10T00:00:00.000Z\",\n            \"Finish_Date\": \"2024-03-13T00:00:00.000Z\",\n            \"status\": \"Running\",\n            \"tags\": \"SAMSUNG\",\n            \"originalPrice\": 27999,\n            \"discountPrice\": 25999,\n            \"stock\": 99,\n            \"images\": [\n                {\n                    \"public_id\": \"products/zkweemi2ub2yl76mrmfv\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710069916/products/zkweemi2ub2yl76mrmfv.jpg\",\n                    \"_id\": \"65ed989c24e85e76f3f8baf9\"\n                },\n                {\n                    \"public_id\": \"products/qt8aesgqm1cnahtpofeg\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710069917/products/qt8aesgqm1cnahtpofeg.jpg\",\n                    \"_id\": \"65ed989c24e85e76f3f8bafa\"\n                },\n                {\n                    \"public_id\": \"products/kzfb7ybucrty799jpx6r\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710069917/products/kzfb7ybucrty799jpx6r.jpg\",\n                    \"_id\": \"65ed989c24e85e76f3f8bafb\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/zqtsqelrbzv2xwzdvne8\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710064852/avatars/zqtsqelrbzv2xwzdvne8.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"noida\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 201304,\n                \"availableBalance\": 0,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-03-10T11:00:05.446Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"66e5b082f7fe4e83c309bceb\",\n            \"name\": \"testevent array\",\n            \"description\": \"testevent array\",\n            \"category\": \"Pet Care\",\n            \"start_Date\": \"2024-09-14T00:00:00.000Z\",\n            \"Finish_Date\": \"2024-09-17T00:00:00.000Z\",\n            \"status\": \"Running\",\n            \"tags\": \"testevent array\",\n            \"originalPrice\": 23,\n            \"discountPrice\": 312,\n            \"stock\": 212,\n            \"images\": [\n                {\n                    \"public_id\": \"products/ozegd0fsjmvhuhwtzzz5\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1726328963/products/ozegd0fsjmvhuhwtzzz5.jpg\",\n                    \"_id\": \"66e5b082f7fe4e83c309bcec\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"delhi\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 110096,\n                \"availableBalance\": 17.91,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-09-14T15:42:04.889Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"66e5b088f7fe4e83c309bcef\",\n            \"name\": \"testevent array\",\n            \"description\": \"testevent array\",\n            \"category\": \"Pet Care\",\n            \"start_Date\": \"2024-09-14T00:00:00.000Z\",\n            \"Finish_Date\": \"2024-09-17T00:00:00.000Z\",\n            \"status\": \"Running\",\n            \"tags\": \"testevent array\",\n            \"originalPrice\": 23,\n            \"discountPrice\": 312,\n            \"stock\": 212,\n            \"images\": [\n                {\n                    \"public_id\": \"products/xc1ciuhlebwi5rq9ewwn\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1726328969/products/xc1ciuhlebwi5rq9ewwn.jpg\",\n                    \"_id\": \"66e5b088f7fe4e83c309bcf0\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"delhi\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 110096,\n                \"availableBalance\": 17.91,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-09-14T15:42:04.889Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"66e5b097f7fe4e83c309bcf3\",\n            \"name\": \"testevent array\",\n            \"description\": \"testevent array\",\n            \"category\": \"Pet Care\",\n            \"start_Date\": \"2024-09-14T00:00:00.000Z\",\n            \"Finish_Date\": \"2024-09-17T00:00:00.000Z\",\n            \"status\": \"Running\",\n            \"tags\": \"testevent array\",\n            \"originalPrice\": 23,\n            \"discountPrice\": 312,\n            \"stock\": 212,\n            \"images\": [\n                {\n                    \"public_id\": \"products/qguyv1mpjsopcluwtjof\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1726328984/products/qguyv1mpjsopcluwtjof.jpg\",\n                    \"_id\": \"66e5b097f7fe4e83c309bcf4\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"delhi\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 110096,\n                \"availableBalance\": 17.91,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-09-14T15:42:04.889Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"66e5b0def7fe4e83c309bcf7\",\n            \"name\": \"testevent array\",\n            \"description\": \"testevent array\",\n            \"category\": \"Pet Care\",\n            \"start_Date\": \"2024-09-14T00:00:00.000Z\",\n            \"Finish_Date\": \"2024-09-17T00:00:00.000Z\",\n            \"status\": \"Running\",\n            \"tags\": \"testevent array\",\n            \"originalPrice\": 23,\n            \"discountPrice\": 312,\n            \"stock\": 212,\n            \"images\": [\n                {\n                    \"public_id\": \"products/sztjyioh7fyptbv0qvwr\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1726329055/products/sztjyioh7fyptbv0qvwr.jpg\",\n                    \"_id\": \"66e5b0def7fe4e83c309bcf8\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"delhi\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 110096,\n                \"availableBalance\": 17.91,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-09-14T15:42:04.889Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"66e5b184f7fe4e83c309bcfe\",\n            \"name\": \"testevent array\",\n            \"description\": \"testevent array\",\n            \"category\": \"Pet Care\",\n            \"start_Date\": \"2024-09-15T00:00:00.000Z\",\n            \"Finish_Date\": \"2024-09-18T00:00:00.000Z\",\n            \"status\": \"Running\",\n            \"tags\": \"testevent array\",\n            \"originalPrice\": 23,\n            \"discountPrice\": 312,\n            \"stock\": 212,\n            \"images\": [\n                {\n                    \"public_id\": \"products/fd1ndpdyxcvomzwhpv36\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1726329221/products/fd1ndpdyxcvomzwhpv36.jpg\",\n                    \"_id\": \"66e5b184f7fe4e83c309bcff\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"delhi\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 110096,\n                \"availableBalance\": 17.91,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-09-14T15:42:04.889Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"66eea9b2d370722fb565be64\",\n            \"name\": \"Puma\",\n            \"description\": \"aaaaaaaaaaaaaaaaaaaaaa\",\n            \"category\": \"Others\",\n            \"start_Date\": \"2024-10-01T00:00:00.000Z\",\n            \"Finish_Date\": \"2024-11-01T00:00:00.000Z\",\n            \"status\": \"Running\",\n            \"tags\": \"@AAAAA\",\n            \"originalPrice\": 50014,\n            \"discountPrice\": 5000,\n            \"stock\": 101,\n            \"images\": [\n                {\n                    \"public_id\": \"products/v6eo2dqvbq85bkdrj8bt\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1726917042/products/v6eo2dqvbq85bkdrj8bt.png\",\n                    \"_id\": \"66eea9b2d370722fb565be65\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"delhi\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 110096,\n                \"availableBalance\": 17.91,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-09-21T11:08:29.741Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"66eeaa65d370722fb565be68\",\n            \"name\": \"Puma.api\",\n            \"description\": \"aaaaaaaaaaaaaaaaaaaaaa\",\n            \"category\": \"Others\",\n            \"start_Date\": \"2024-10-01T00:00:00.000Z\",\n            \"Finish_Date\": \"2024-11-01T00:00:00.000Z\",\n            \"status\": \"Running\",\n            \"tags\": \"@AAAAA\",\n            \"originalPrice\": 50014,\n            \"discountPrice\": 5000,\n            \"stock\": 101,\n            \"images\": [\n                {\n                    \"public_id\": \"products/ooylmih3wqxbxfq4ds9k\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1726917221/products/ooylmih3wqxbxfq4ds9k.png\",\n                    \"_id\": \"66eeaa65d370722fb565be69\"\n                }\n            ],\n            \"shopId\": \"65ed817e49f74060e50556b7\",\n            \"shop\": {\n                \"avatar\": {\n                    \"public_id\": \"avatars/plv0qoz3jef9yscc7pmf\",\n                    \"url\": \"https://res.cloudinary.com/dvnakbz5a/image/upload/v1710344375/avatars/plv0qoz3jef9yscc7pmf.png\"\n                },\n                \"_id\": \"65ed817e49f74060e50556b7\",\n                \"name\": \"Asus Ltd\",\n                \"email\": \"avinash.gupta.pmt@gmail.com\",\n                \"address\": \"delhi\",\n                \"phoneNumber\": 1234567890,\n                \"role\": \"Seller\",\n                \"zipCode\": 110096,\n                \"availableBalance\": 17.91,\n                \"createdAt\": \"2024-03-10T09:45:38.933Z\",\n                \"transections\": [],\n                \"__v\": 0,\n                \"description\": \"Established in 1989, ASUS is a multinational company known for the world's best motherboards and high-quality personal computers, monitors, graphics cards, routers and other technology solutions.\"\n            },\n            \"sold_out\": 0,\n            \"createdAt\": \"2024-09-21T11:08:29.741Z\",\n            \"__v\": 0\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "seller",
+			"item": [
+				{
+					"name": "getseller",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://e-shop-xi-vert.vercel.app/api/v2/shop/getSeller",
+							"protocol": "https",
+							"host": [
+								"e-shop-xi-vert",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v2",
+								"shop",
+								"getSeller"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://e-shop-xi-vert.vercel.app/api/v2/shop/getSeller",
+									"protocol": "https",
+									"host": [
+										"e-shop-xi-vert",
+										"vercel",
+										"app"
+									],
+									"path": [
+										"api",
+										"v2",
+										"shop",
+										"getSeller"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "https://e-shop-njoh.vercel.app"
+								},
+								{
+									"key": "Age",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Length",
+									"value": "54"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 21 Dec 2025 07:25:30 GMT"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"36-6ZY9C4Va3ZnY0eh+QZKPcP6gyVw\""
+								},
+								{
+									"key": "Server",
+									"value": "Vercel"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains; preload"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "X-Vercel-Cache",
+									"value": "MISS"
+								},
+								{
+									"key": "X-Vercel-Id",
+									"value": "bom1::iad1::knnvt-1766301930229-dcd7dbcdd807"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Please login to continue\"\n}"
 						}
 					]
 				}
