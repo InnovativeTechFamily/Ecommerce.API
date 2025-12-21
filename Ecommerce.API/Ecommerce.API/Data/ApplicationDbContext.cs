@@ -61,8 +61,11 @@ namespace Ecommerce.API.Data
 
                 entity.Property(p => p.DiscountPrice)
                     .HasPrecision(18, 2);
-
-            });
+				entity.Property(p => p.CreatedAt)
+	                  .HasDefaultValueSql("GETUTCDATE()");
+				entity.Property(p => p.UpdatedAt)
+				  .HasDefaultValueSql("GETUTCDATE()");
+			});
 		}
     }
 }
