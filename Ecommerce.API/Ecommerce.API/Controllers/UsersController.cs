@@ -76,15 +76,20 @@ namespace Ecommerce.API.Controllers
                 }
 
                 // Create activation token
-                var userForActivation = new
-                {
-                    createUserDto.Name,
-                    createUserDto.Email,
-                    createUserDto.Password,
-                    Avatar = cloudinaryAvatar
-                };
+                //var userForActivation = new
+                //{
+                //    createUserDto.Name,
+                //    createUserDto.Email,
+                //    createUserDto.Password,
+                //    Avatar = cloudinaryAvatar
+                //};
 
-                var activationToken = GenerateActivationToken(userForActivation);
+                var activationToken = GenerateActivationToken(
+                                        createUserDto.Name,
+                                        createUserDto.Email,
+                                        createUserDto.Password,
+                                        cloudinaryAvatar
+                                    );
                 var activationUrl = $"{_configuration["Frontend:BaseUrl"]}/activation/{activationToken}";
 
                 // Send activation email
@@ -104,7 +109,8 @@ namespace Ecommerce.API.Controllers
                 return Ok(new
                 {
                     success = true,
-                    message = $"Please check your email: {createUserDto.Email} to activate your account!"
+                    message = $"Please check your email: {createUserDto.Email} to activate your account!",
+                    token = activationToken
                 });
             }
             catch (ErrorHandler)
@@ -407,15 +413,30 @@ namespace Ecommerce.API.Controllers
         }
 
         // Helper methods remain the same as before...
-        private string GenerateActivationToken(object userData)
+        private string GenerateActivationToken(string name,string email,string password,CloudinaryUploadResponse? avatar)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Activation:SecretKey"]);
 
+            var claims = new List<Claim>
+                            {
+                                new Claim("name", name),
+                                new Claim("email", email),
+                                new Claim("password", password)
+                            };
+
+            if (avatar != null)
+            {
+                claims.Add(new Claim(
+                    "avatar",
+                    Newtonsoft.Json.JsonConvert.SerializeObject(avatar)
+                ));
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(),
-                Expires = DateTime.UtcNow.AddMinutes(5),
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddMinutes(10),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
@@ -424,6 +445,7 @@ namespace Ecommerce.API.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
 
         private User? ValidateActivationToken(string token)
         {
@@ -461,10 +483,15 @@ namespace Ecommerce.API.Controllers
                     }
                 }
 
+                // Replace this line in ValidateActivationToken:
+               var  Email = principal.FindFirst(ClaimTypes.Email);//principal.FindFirst("email")?.Value,
+
+                // With this corrected line:
+                //Email = principal.FindFirst("email")?.Value, //or we use in principle   MapInboundClaims = false 
                 return new User
                 {
                     Name = principal.FindFirst("name")?.Value,
-                    Email = principal.FindFirst("email")?.Value,
+                    Email = Email.Value,//principal.FindFirst("email")?.Value,
                     Password = principal.FindFirst("password")?.Value,
                     Avatar = avatar
                 };

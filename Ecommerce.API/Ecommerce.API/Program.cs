@@ -73,13 +73,21 @@ builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 // Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder =>
-        {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
-        });
+    //options.AddPolicy("AllowAll",
+    //    builder =>
+    //    {
+    //        builder.AllowAnyOrigin()
+    //               .AllowAnyMethod()
+    //               .AllowAnyHeader();
+    //    });
+    options.AddPolicy("AllowFrontend",
+       policy =>
+       {
+           policy.WithOrigins("http://localhost:3000")
+                 .AllowAnyHeader()
+                 .AllowAnyMethod()
+                 .AllowCredentials();
+       });
 });
 
 // Add Logging
@@ -104,7 +112,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Add CORS
-app.UseCors("AllowAll");
+//app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
+
 
 // Add Error Handling Middleware
 app.UseMiddleware<ErrorHandlingMiddleware>();
