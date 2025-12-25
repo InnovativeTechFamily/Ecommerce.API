@@ -5,7 +5,7 @@ namespace Ecommerce.API.Entities.Users
     public class User
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Please enter your name!")]
         [StringLength(100)]
@@ -18,27 +18,20 @@ namespace Ecommerce.API.Entities.Users
 
         [Required(ErrorMessage = "Please enter your password")]
         [MinLength(4, ErrorMessage = "Password should be greater than 4 characters")]
-        public string PasswordHash { get; set; }
+        public string Password { get; set; }
 
         public string? PhoneNumber { get; set; }
 
-        public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
+        public virtual ICollection<UserAddress> Addresses { get; set; } = new List<UserAddress>();
 
-        [StringLength(50)]
         public string Role { get; set; } = "user";
 
-        public virtual Avatar? Avatar { get; set; }
+        public Avatar? Avatar { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public string? ResetPasswordToken { get; set; }
 
         public DateTime? ResetPasswordTokenExpiry { get; set; }
-
-        public bool IsActive { get; set; } = false;
-
-        public string? ActivationToken { get; set; }
-
-        public DateTime? ActivationTokenExpiry { get; set; }
     }
 }

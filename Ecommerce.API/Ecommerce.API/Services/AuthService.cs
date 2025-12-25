@@ -29,7 +29,7 @@ namespace Ecommerce.API.Services
             //_emailService = emailService;
         }
 
-        public async Task<UserResponseDto> CreateUserAsync(UserCreateDto userDto)
+        public async Task<UserResponseDto> CreateUserAsync(CreateUserDto userDto)
         {
             // Check if user already exists
             var existingUser = await _context.Users
@@ -143,7 +143,7 @@ namespace Ecommerce.API.Services
 			return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
 		}
 
-		public async Task<bool> VerifyLoginUser(UserLoginDto userLoginDto)
+		public async Task<bool> VerifyLoginUser(LoginDto userLoginDto)
 		{
 			var user = await _context.Users
 				.FirstOrDefaultAsync(u => u.Email == userLoginDto.Email);

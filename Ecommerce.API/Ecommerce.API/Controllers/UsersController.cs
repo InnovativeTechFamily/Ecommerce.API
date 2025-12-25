@@ -1,7 +1,16 @@
-﻿using Ecommerce.API.DTOs.User;
+﻿using Ecommerce.API.Data;
+using Ecommerce.API.DTOs.User;
+using Ecommerce.API.Entities.Users;
 using Ecommerce.API.Exceptions;
 using Ecommerce.API.Services;
+using Ecommerce.API.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Ecommerce.API.Controllers
 {
@@ -9,67 +18,488 @@ namespace Ecommerce.API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
+        private readonly ICloudinaryService _cloudinaryService;
+        private readonly ILogger<UsersController> _logger;
 
-        public UsersController(IAuthService authService)
+        public UsersController(
+            ApplicationDbContext context,
+            IConfiguration configuration,
+            IEmailService emailService,
+            ICloudinaryService cloudinaryService,
+            ILogger<UsersController> logger)
         {
-            _authService = authService;
+            _context = context;
+            _configuration = configuration;
+            _emailService = emailService;
+            _cloudinaryService = cloudinaryService;
+            _logger = logger;
         }
 
-        // POST: api/users/create-user
         [HttpPost("create-user")]
-        [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto userDto)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
         {
             try
             {
-                var user = await _authService.CreateUserAsync(userDto);
+                // Check if user already exists
+                var existingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Email == createUserDto.Email);
 
-                return CreatedAtAction(nameof(CreateUser), new { id = user.Id }, new
+                if (existingUser != null)
+                {
+                    throw new ErrorHandler("User already exists", 400);
+                }
+
+                // Handle avatar upload if provided
+                CloudinaryUploadResponse? cloudinaryAvatar = null;
+                if (!string.IsNullOrEmpty(createUserDto.Avatar))
+                {
+                    try
+                    {
+                        var uploadResult = await _cloudinaryService.UploadImageAsync(
+                            createUserDto.Avatar, "avatars");
+
+                        cloudinaryAvatar = new CloudinaryUploadResponse
+                        {
+                            PublicId = uploadResult.PublicId,
+                            Url = uploadResult.Url.ToString(),
+                            SecureUrl = uploadResult.SecureUrl.ToString()
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Failed to upload avatar to Cloudinary");
+                        throw new ErrorHandler("Failed to upload avatar", 500);
+                    }
+                }
+
+                // Create activation token
+                var userForActivation = new
+                {
+                    createUserDto.Name,
+                    createUserDto.Email,
+                    createUserDto.Password,
+                    Avatar = cloudinaryAvatar
+                };
+
+                var activationToken = GenerateActivationToken(userForActivation);
+                var activationUrl = $"{_configuration["Frontend:BaseUrl"]}/activation/{activationToken}";
+
+                // Send activation email
+                try
+                {
+                    await _emailService.SendEmailAsync(
+                        createUserDto.Email,
+                        "Activate your account",
+                        $"Hello {createUserDto.Name}, please click on the link to activate your account: {activationUrl}");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to send activation email");
+                    throw new ErrorHandler("Failed to send activation email", 500);
+                }
+
+                return Ok(new
                 {
                     success = true,
-                    message = $"Please check your email: {user.Email} to activate your account!",
-                    user
+                    message = $"Please check your email: {createUserDto.Email} to activate your account!"
                 });
             }
-            catch (BadRequestException ex)
+            catch (ErrorHandler)
             {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
+                throw;
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                _logger.LogError(ex, "Error creating user");
+                throw new ErrorHandler(ex.Message, 400);
+            }
+        }
+
+        [HttpPost("activation")]
+        public async Task<IActionResult> ActivateUser([FromBody] ActivationDto activationDto)
+        {
+            try
+            {
+                var userData = ValidateActivationToken(activationDto.ActivationToken);
+                if (userData == null)
                 {
-                    success = false,
-                    message = "An error occurred while creating the user",
-                    error = ex.Message
+                    throw new ErrorHandler("Invalid token", 400);
+                }
+
+                // Check if user already exists
+                var existingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Email == userData.Email);
+
+                if (existingUser != null)
+                {
+                    throw new ErrorHandler("User already exists", 400);
+                }
+
+                // Create user
+                var user = new User
+                {
+                    Name = userData.Name,
+                    Email = userData.Email,
+                    Password = PasswordHelper.HashPassword(userData.Password),
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                // Handle avatar if provided in activation data
+                if (userData.Avatar != null)
+                {
+                    user.Avatar = new Avatar
+                    {
+                        PublicId = userData.Avatar.PublicId,
+                        Url = userData.Avatar.SecureUrl ?? userData.Avatar.Url
+                    };
+                }
+
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
+
+                // Generate JWT token
+                var token = JwtTokenHelper.GenerateJwtToken(user, _configuration);
+
+                return Ok(new
+                {
+                    success = true,
+                    token = token
                 });
+            }
+            catch (ErrorHandler)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error activating user");
+                throw new ErrorHandler(ex.Message, 500);
             }
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var isValidUser = await _authService.VerifyLoginUser(loginDto);
-			if (!isValidUser)
+            try
             {
-                return Unauthorized(new
+                if (string.IsNullOrEmpty(loginDto.Email) || string.IsNullOrEmpty(loginDto.Password))
                 {
-                    success = false,
-                    message = "Invalid email or password."
-                });
-			}
-			return Ok( new{
-                success = true,
-                message = "Login successful."
+                    throw new ErrorHandler("Please provide all fields!", 400);
+                }
 
-			});
-		}
-	}
+                var user = await _context.Users
+                    .Include(u => u.Avatar)
+                    .Include(u => u.Addresses)
+                    .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+
+                if (user == null)
+                {
+                    throw new ErrorHandler("User doesn't exist!", 400);
+                }
+
+                if (!PasswordHelper.VerifyPassword(loginDto.Password, user.Password))
+                {
+                    throw new ErrorHandler("Please provide the correct information", 400);
+                }
+
+                var token = JwtTokenHelper.GenerateJwtToken(user, _configuration);
+                var userResponse = MapUserToDto(user);
+
+                // Set cookie
+                var cookieOptions = new CookieOptions
+                {
+                    Expires = DateTime.UtcNow.AddDays(90),
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.None,
+                    Secure = true
+                };
+
+                Response.Cookies.Append("token", token, cookieOptions);
+
+                return Ok(new AuthResponseDto
+                {
+                    Success = true,
+                    User = userResponse,
+                    Token = token
+                });
+            }
+            catch (ErrorHandler)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during login");
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("upload-avatar")]
+        public async Task<IActionResult> UploadAvatar([FromBody] AvatarUploadDto avatarDto)
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var user = await _context.Users
+                    .Include(u => u.Avatar)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    throw new ErrorHandler("User not found", 404);
+                }
+
+                // Delete old avatar from Cloudinary if exists
+                if (user.Avatar != null && !string.IsNullOrEmpty(user.Avatar.PublicId))
+                {
+                    try
+                    {
+                        await _cloudinaryService.DeleteImageAsync(user.Avatar.PublicId);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to delete old avatar from Cloudinary");
+                    }
+
+                    _context.Avatars.Remove(user.Avatar);
+                }
+
+                // Upload new avatar to Cloudinary
+                var uploadResult = await _cloudinaryService.UploadImageAsync(
+                    avatarDto.ImageData, "avatars");
+
+                // Create new avatar
+                user.Avatar = new Avatar
+                {
+                    PublicId = uploadResult.PublicId,
+                    Url = uploadResult.SecureUrl.ToString()
+                };
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new CloudinaryUploadResponse
+                {
+                    PublicId = uploadResult.PublicId,
+                    Url = uploadResult.Url.ToString(),
+                    SecureUrl = uploadResult.SecureUrl.ToString()
+                });
+            }
+            catch (ErrorHandler)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading avatar");
+                throw new ErrorHandler($"Failed to upload avatar: {ex.Message}", 500);
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("delete-avatar")]
+        public async Task<IActionResult> DeleteAvatar()
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var user = await _context.Users
+                    .Include(u => u.Avatar)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null || user.Avatar == null)
+                {
+                    return Ok(new { success = true, message = "No avatar to delete" });
+                }
+
+                // Delete from Cloudinary
+                if (!string.IsNullOrEmpty(user.Avatar.PublicId))
+                {
+                    try
+                    {
+                        await _cloudinaryService.DeleteImageAsync(user.Avatar.PublicId);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to delete avatar from Cloudinary");
+                    }
+                }
+
+                // Remove from database
+                _context.Avatars.Remove(user.Avatar);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Avatar deleted successfully" });
+            }
+            catch (ErrorHandler)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting avatar");
+                throw new ErrorHandler($"Failed to delete avatar: {ex.Message}", 500);
+            }
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost("upload-user-avatar/{userId}")]
+        public async Task<IActionResult> UploadUserAvatar(int userId, [FromBody] AvatarUploadDto avatarDto)
+        {
+            try
+            {
+                var user = await _context.Users
+                    .Include(u => u.Avatar)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    throw new ErrorHandler("User not found", 404);
+                }
+
+                // Delete old avatar from Cloudinary if exists
+                if (user.Avatar != null && !string.IsNullOrEmpty(user.Avatar.PublicId))
+                {
+                    try
+                    {
+                        await _cloudinaryService.DeleteImageAsync(user.Avatar.PublicId);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to delete old avatar from Cloudinary");
+                    }
+
+                    _context.Avatars.Remove(user.Avatar);
+                }
+
+                // Upload new avatar to Cloudinary
+                var uploadResult = await _cloudinaryService.UploadImageAsync(
+                    avatarDto.ImageData, "avatars");
+
+                // Create new avatar
+                user.Avatar = new Avatar
+                {
+                    PublicId = uploadResult.PublicId,
+                    Url = uploadResult.SecureUrl.ToString()
+                };
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new CloudinaryUploadResponse
+                {
+                    PublicId = uploadResult.PublicId,
+                    Url = uploadResult.Url.ToString(),
+                    SecureUrl = uploadResult.SecureUrl.ToString()
+                });
+            }
+            catch (ErrorHandler)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading user avatar");
+                throw new ErrorHandler($"Failed to upload avatar: {ex.Message}", 500);
+            }
+        }
+
+        // Helper methods remain the same as before...
+        private string GenerateActivationToken(object userData)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["Activation:SecretKey"]);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(),
+                Expires = DateTime.UtcNow.AddMinutes(5),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        private User? ValidateActivationToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["Activation:SecretKey"]);
+
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                // Extract claims and reconstruct user data
+                var jwtToken = (JwtSecurityToken)validatedToken;
+
+                // Deserialize CloudinaryUploadResponse and map to Avatar
+                CloudinaryUploadResponse? avatarResponse = null;
+                var avatarClaim = principal.FindFirst("avatar")?.Value;
+                Avatar? avatar = null;
+                if (!string.IsNullOrEmpty(avatarClaim))
+                {
+                    avatarResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<CloudinaryUploadResponse>(avatarClaim);
+                    if (avatarResponse != null)
+                    {
+                        avatar = new Avatar
+                        {
+                            PublicId = avatarResponse.PublicId,
+                            Url = avatarResponse.SecureUrl ?? avatarResponse.Url
+                        };
+                    }
+                }
+
+                return new User
+                {
+                    Name = principal.FindFirst("name")?.Value,
+                    Email = principal.FindFirst("email")?.Value,
+                    Password = principal.FindFirst("password")?.Value,
+                    Avatar = avatar
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private UserResponseDto MapUserToDto(User user)
+        {
+            return new UserResponseDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Role = user.Role,
+                Avatar = user.Avatar != null ? new AvatarDto
+                {
+                    PublicId = user.Avatar.PublicId,
+                    Url = user.Avatar.Url
+                } : null,
+                CreatedAt = user.CreatedAt,
+                Addresses = user.Addresses?.Select(a => new UserAddressDto
+                {
+                    Country = a.Country,
+                    City = a.City,
+                    Address1 = a.Address1,
+                    Address2 = a.Address2,
+                    ZipCode = a.ZipCode,
+                    AddressType = a.AddressType
+                }).ToList() ?? new List<UserAddressDto>()
+            };
+        }
+    }
 }
