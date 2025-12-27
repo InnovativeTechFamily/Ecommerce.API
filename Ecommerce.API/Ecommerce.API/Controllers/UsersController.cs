@@ -604,7 +604,7 @@ namespace Ecommerce.API.Controllers
                 }).ToList() ?? new List<UserAddressDto>()
             };
         }
-        public User MapObjectToUserEntity(object userObject)
+        private User MapObjectToUserEntity(object userObject)
         {
             // Cast the object to dynamic to access properties
             dynamic obj = userObject;
