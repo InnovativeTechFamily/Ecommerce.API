@@ -262,20 +262,28 @@ namespace Ecommerce.API.Controllers
                 user
             });
         }
-        [Authorize]
+      //  [Authorize]
         [HttpPost("upload-avatar")]
+        [IsAuthenticated]
         public async Task<IActionResult> UploadAvatar([FromBody] AvatarUploadDto avatarDto)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-                var user = await _context.Users
-                    .Include(u => u.Avatar)
-                    .FirstOrDefaultAsync(u => u.Id == userId);
+                //var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                //var user = await _context.Users
+                //    .Include(u => u.Avatar)
+                //    .FirstOrDefaultAsync(u => u.Id == userId);
 
+                //if (user == null)
+                //{
+                //    throw new ErrorHandler("User not found", 404);
+                //}
+                // user was loaded in IsAuthenticatedAttribute
+                var userObj = HttpContext.Items["User"];
+                var user = MapObjectToUserEntity(userObj!);
                 if (user == null)
                 {
-                    throw new ErrorHandler("User not found", 404);
+                    throw new ErrorHandler("User doesn't exists", 400);
                 }
 
                 // Delete old avatar from Cloudinary if exists
@@ -303,6 +311,7 @@ namespace Ecommerce.API.Controllers
                     PublicId = uploadResult.PublicId,
                     Url = uploadResult.SecureUrl.ToString()
                 };
+
 
                 await _context.SaveChangesAsync();
 
@@ -546,6 +555,52 @@ namespace Ecommerce.API.Controllers
                     AddressType = a.AddressType
                 }).ToList() ?? new List<UserAddressDto>()
             };
+        }
+        public User MapObjectToUserEntity(object userObject)
+        {
+            // Cast the object to dynamic to access properties
+            dynamic obj = userObject;
+
+            var user = new User
+            {
+                Id = obj.Id ?? 0, // Assuming 0 for new users
+                Name = obj.Name,
+                Email = obj.Email,
+                Password = obj.Password, // Note: You should hash this password
+                PhoneNumber = obj.PhoneNumber,
+                Role = obj.Role ?? "user", // Default to "user"
+                CreatedAt = obj.CreatedAt ?? DateTime.UtcNow
+            };
+
+            // Map Avatar if it exists
+            if (obj.Avatar != null)
+            {
+                user.Avatar = new Avatar
+                {
+                    PublicId = obj.Avatar.PublicId,
+                    Url = obj.Avatar.Url
+                };
+            }
+
+            // Map Addresses if they exist
+            if (obj.Addresses != null)
+            {
+                user.Addresses = new List<UserAddress>();
+                foreach (var address in obj.Addresses)
+                {
+                    user.Addresses.Add(new UserAddress
+                    {
+                        Country = address.Country,
+                        City = address.City,
+                        Address1 = address.Address1,
+                        Address2 = address.Address2,
+                        ZipCode = address.ZipCode,
+                        AddressType = address.AddressType
+                    });
+                }
+            }
+
+            return user;
         }
     }
 }
