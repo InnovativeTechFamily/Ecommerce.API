@@ -2,6 +2,7 @@
 using Ecommerce.API.DTOs.User;
 using Ecommerce.API.Entities.Users;
 using Ecommerce.API.Exceptions;
+using Ecommerce.API.Middleware;
 using Ecommerce.API.Services;
 using Ecommerce.API.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Ecommerce.API.Controllers
 {
@@ -76,15 +78,20 @@ namespace Ecommerce.API.Controllers
                 }
 
                 // Create activation token
-                var userForActivation = new
-                {
-                    createUserDto.Name,
-                    createUserDto.Email,
-                    createUserDto.Password,
-                    Avatar = cloudinaryAvatar
-                };
+                //var userForActivation = new
+                //{
+                //    createUserDto.Name,
+                //    createUserDto.Email,
+                //    createUserDto.Password,
+                //    Avatar = cloudinaryAvatar
+                //};
 
-                var activationToken = GenerateActivationToken(userForActivation);
+                var activationToken = GenerateActivationToken(
+                                        createUserDto.Name,
+                                        createUserDto.Email,
+                                        createUserDto.Password,
+                                        cloudinaryAvatar
+                                    );
                 var activationUrl = $"{_configuration["Frontend:BaseUrl"]}/activation/{activationToken}";
 
                 // Send activation email
@@ -104,7 +111,8 @@ namespace Ecommerce.API.Controllers
                 return Ok(new
                 {
                     success = true,
-                    message = $"Please check your email: {createUserDto.Email} to activate your account!"
+                    message = $"Please check your email: {createUserDto.Email} to activate your account!",
+                    token = activationToken
                 });
             }
             catch (ErrorHandler)
@@ -236,21 +244,89 @@ namespace Ecommerce.API.Controllers
                 throw new ErrorHandler(ex.Message, 500);
             }
         }
+        [HttpGet("logout")]
+        [IsAuthenticated] // same as your isAuthenticated middleware
+        public IActionResult Logout()
+        {
+            try
+            {
+                // Option 1: overwrite cookie with expired one (closest to your Node code)
+                Response.Cookies.Append("token", string.Empty, new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow,        // expire immediately
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.None,           // "none"
+                    Secure = true                           // secure: true
+                });
 
-        [Authorize]
+                // Option 2 (alternative): delete cookie by name
+                // Response.Cookies.Delete("token");
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    message = "Log out successful!"
+                });
+            }
+            catch (Exception ex)
+            {
+                // This will be caught by GlobalExceptionMiddleware
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+        [HttpGet("getUser")]
+        [IsAuthenticated] // like isAuthenticated middleware
+        public async Task<IActionResult> GetUser()
+        {
+            // user was loaded in IsAuthenticatedAttribute
+            var userObj = HttpContext.Items["User"];
+            var user = MapObjectToUserEntity(userObj!);
+
+            if (user == null)
+            {
+                throw new ErrorHandler("User doesn't exists", 400);
+            }
+
+            var avatar = await _context.Avatars.Where(x => x.UserId == user.Id).FirstOrDefaultAsync();
+
+            // Create new avatar
+            user.Avatar = new Avatar
+            {
+                Id = avatar.Id,
+                PublicId = avatar.PublicId,
+                Url = avatar.SecureUrl.ToString(),
+                SecureUrl = avatar.SecureUrl.ToString(),
+
+            };
+
+            return Ok(new
+            {
+                success = true,
+                user
+            });
+        }
+      //  [Authorize]
         [HttpPost("upload-avatar")]
+        [IsAuthenticated]
         public async Task<IActionResult> UploadAvatar([FromBody] AvatarUploadDto avatarDto)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-                var user = await _context.Users
-                    .Include(u => u.Avatar)
-                    .FirstOrDefaultAsync(u => u.Id == userId);
+                //var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                //var user = await _context.Users
+                //    .Include(u => u.Avatar)
+                //    .FirstOrDefaultAsync(u => u.Id == userId);
 
+                //if (user == null)
+                //{
+                //    throw new ErrorHandler("User not found", 404);
+                //}
+                // user was loaded in IsAuthenticatedAttribute
+                var userObj = HttpContext.Items["User"];
+                var user = MapObjectToUserEntity(userObj!);
                 if (user == null)
                 {
-                    throw new ErrorHandler("User not found", 404);
+                    throw new ErrorHandler("User doesn't exists", 400);
                 }
 
                 // Delete old avatar from Cloudinary if exists
@@ -272,12 +348,18 @@ namespace Ecommerce.API.Controllers
                 var uploadResult = await _cloudinaryService.UploadImageAsync(
                     avatarDto.ImageData, "avatars");
 
-                // Create new avatar
-                user.Avatar = new Avatar
+            
+
+                var avatar = new Avatar
                 {
                     PublicId = uploadResult.PublicId,
-                    Url = uploadResult.SecureUrl.ToString()
+                    Url = uploadResult.SecureUrl.ToString(),
+                    SecureUrl = uploadResult.SecureUrl.ToString(),
+                    UserId = user.Id
                 };
+
+                await _context.Avatars.AddAsync(avatar);
+
 
                 await _context.SaveChangesAsync();
 
@@ -407,15 +489,30 @@ namespace Ecommerce.API.Controllers
         }
 
         // Helper methods remain the same as before...
-        private string GenerateActivationToken(object userData)
+        private string GenerateActivationToken(string name,string email,string password,CloudinaryUploadResponse? avatar)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Activation:SecretKey"]);
 
+            var claims = new List<Claim>
+                            {
+                                new Claim("name", name),
+                                new Claim("email", email),
+                                new Claim("password", password)
+                            };
+
+            if (avatar != null)
+            {
+                claims.Add(new Claim(
+                    "avatar",
+                    Newtonsoft.Json.JsonConvert.SerializeObject(avatar)
+                ));
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(),
-                Expires = DateTime.UtcNow.AddMinutes(5),
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddMinutes(10),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
@@ -424,6 +521,7 @@ namespace Ecommerce.API.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
 
         private User? ValidateActivationToken(string token)
         {
@@ -461,10 +559,15 @@ namespace Ecommerce.API.Controllers
                     }
                 }
 
+                // Replace this line in ValidateActivationToken:
+               var  Email = principal.FindFirst(ClaimTypes.Email);//principal.FindFirst("email")?.Value,
+
+                // With this corrected line:
+                //Email = principal.FindFirst("email")?.Value, //or we use in principle   MapInboundClaims = false 
                 return new User
                 {
                     Name = principal.FindFirst("name")?.Value,
-                    Email = principal.FindFirst("email")?.Value,
+                    Email = Email.Value,//principal.FindFirst("email")?.Value,
                     Password = principal.FindFirst("password")?.Value,
                     Avatar = avatar
                 };
@@ -500,6 +603,52 @@ namespace Ecommerce.API.Controllers
                     AddressType = a.AddressType
                 }).ToList() ?? new List<UserAddressDto>()
             };
+        }
+        private User MapObjectToUserEntity(object userObject)
+        {
+            // Cast the object to dynamic to access properties
+            dynamic obj = userObject;
+
+            var user = new User
+            {
+                Id = obj.Id ?? 0, // Assuming 0 for new users
+                Name = obj.Name,
+                Email = obj.Email,
+                Password = obj.Password, // Note: You should hash this password
+                PhoneNumber = obj.PhoneNumber,
+                Role = obj.Role ?? "user", // Default to "user"
+                CreatedAt = obj.CreatedAt ?? DateTime.UtcNow
+            };
+
+            // Map Avatar if it exists
+            if (obj.Avatar != null)
+            {
+                user.Avatar = new Avatar
+                {
+                    PublicId = obj.Avatar.PublicId,
+                    Url = obj.Avatar.Url
+                };
+            }
+
+            // Map Addresses if they exist
+            if (obj.Addresses != null)
+            {
+                user.Addresses = new List<UserAddress>();
+                foreach (var address in obj.Addresses)
+                {
+                    user.Addresses.Add(new UserAddress
+                    {
+                        Country = address.Country,
+                        City = address.City,
+                        Address1 = address.Address1,
+                        Address2 = address.Address2,
+                        ZipCode = address.ZipCode,
+                        AddressType = address.AddressType
+                    });
+                }
+            }
+
+            return user;
         }
     }
 }

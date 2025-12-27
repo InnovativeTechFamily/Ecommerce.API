@@ -29,34 +29,35 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //builder.Services.AddOpenApi();
 
-// Add Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.ASCII.GetBytes(builder.Configuration["Jwt:SecretKey"])),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ClockSkew = TimeSpan.Zero
-    };
+//// Add Authentication
+//// later we see
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer(options =>
+//{
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuerSigningKey = true,
+//        IssuerSigningKey = new SymmetricSecurityKey(
+//            Encoding.ASCII.GetBytes(builder.Configuration["Jwt:SecretKey"])),
+//        ValidateIssuer = false,
+//        ValidateAudience = false,
+//        ClockSkew = TimeSpan.Zero
+//    };
 
-    options.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = context =>
-        {
-            // Allow token from cookies
-            context.Token = context.Request.Cookies["token"];
-            return Task.CompletedTask;
-        }
-    };
-});
+//    options.Events = new JwtBearerEvents
+//    {
+//        OnMessageReceived = context =>
+//        {
+//            // Allow token from cookies
+//            context.Token = context.Request.Cookies["token"];
+//            return Task.CompletedTask;
+//        }
+//    };
+//});
 
 //builder.Services.AddScoped<IAuthService, AuthService>();
 //builder.Services.AddScoped<IProductService, ProductService>();
@@ -73,13 +74,21 @@ builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 // Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder =>
-        {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
-        });
+    //options.AddPolicy("AllowAll",
+    //    builder =>
+    //    {
+    //        builder.AllowAnyOrigin()
+    //               .AllowAnyMethod()
+    //               .AllowAnyHeader();
+    //    });
+    options.AddPolicy("AllowFrontend",
+       policy =>
+       {
+           policy.WithOrigins("http://localhost:3000")
+                 .AllowAnyHeader()
+                 .AllowAnyMethod()
+                 .AllowCredentials();
+       });
 });
 
 // Add Logging
@@ -104,7 +113,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Add CORS
-app.UseCors("AllowAll");
+//app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
+
 
 // Add Error Handling Middleware
 app.UseMiddleware<ErrorHandlingMiddleware>();
