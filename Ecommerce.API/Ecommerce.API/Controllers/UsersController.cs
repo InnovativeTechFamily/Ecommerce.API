@@ -2,6 +2,7 @@
 using Ecommerce.API.DTOs.User;
 using Ecommerce.API.Entities.Users;
 using Ecommerce.API.Exceptions;
+using Ecommerce.API.Middleware;
 using Ecommerce.API.Services;
 using Ecommerce.API.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -243,6 +244,24 @@ namespace Ecommerce.API.Controllers
             }
         }
 
+        [HttpGet("getUser")]
+        [IsAuthenticated] // like isAuthenticated middleware
+        public IActionResult GetUser()
+        {
+            // user was loaded in IsAuthenticatedAttribute
+            var user = HttpContext.Items["User"];
+
+            if (user == null)
+            {
+                throw new ErrorHandler("User doesn't exists", 400);
+            }
+
+            return Ok(new
+            {
+                success = true,
+                user
+            });
+        }
         [Authorize]
         [HttpPost("upload-avatar")]
         public async Task<IActionResult> UploadAvatar([FromBody] AvatarUploadDto avatarDto)
