@@ -15,7 +15,7 @@ namespace Ecommerce.API.DTOs.Products
 		public int Stock { get; set; }
 		public List<ProductImageResponseDto>? Images { get; set; }
 		public decimal? Ratings { get; set; }
-		public string ShopId { get; set; }
+		public Guid ShopId { get; set; }
 		public object? Shop { get; set; }
 		public int SoldOut { get; set; }
 		public int Status { get; set; }

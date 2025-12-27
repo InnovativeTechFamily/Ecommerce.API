@@ -116,8 +116,8 @@ namespace Ecommerce.API.Services
 			if (updateProductDto.Stock >= 0) // Assuming stock can't be negative
 				product.Stock = updateProductDto.Stock;
 
-			if (!string.IsNullOrEmpty(updateProductDto.ShopId))
-				product.ShopId = updateProductDto.ShopId;
+			//if (updateProductDto.ShopId)
+				//product.ShopId = updateProductDto.ShopId;
 
 			// Update timestamp
 			product.UpdatedAt = DateTime.UtcNow;

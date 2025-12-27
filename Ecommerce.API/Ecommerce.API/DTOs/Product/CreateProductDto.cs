@@ -31,6 +31,6 @@ namespace Ecommerce.API.DTOs.Products
 
 		[Required(ErrorMessage = "Shop ID is required")]
 		[StringLength(50, ErrorMessage = "Shop ID cannot exceed 50 characters")]
-		public string ShopId { get; set; }
+		public Guid ShopId { get; set; }
 	}
 }
