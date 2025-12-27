@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Ecommerce.API.Controllers
 {
@@ -243,18 +244,60 @@ namespace Ecommerce.API.Controllers
                 throw new ErrorHandler(ex.Message, 500);
             }
         }
+        [HttpGet("logout")]
+        [IsAuthenticated] // same as your isAuthenticated middleware
+        public IActionResult Logout()
+        {
+            try
+            {
+                // Option 1: overwrite cookie with expired one (closest to your Node code)
+                Response.Cookies.Append("token", string.Empty, new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow,        // expire immediately
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.None,           // "none"
+                    Secure = true                           // secure: true
+                });
 
+                // Option 2 (alternative): delete cookie by name
+                // Response.Cookies.Delete("token");
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    message = "Log out successful!"
+                });
+            }
+            catch (Exception ex)
+            {
+                // This will be caught by GlobalExceptionMiddleware
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
         [HttpGet("getUser")]
         [IsAuthenticated] // like isAuthenticated middleware
-        public IActionResult GetUser()
+        public async Task<IActionResult> GetUser()
         {
             // user was loaded in IsAuthenticatedAttribute
-            var user = HttpContext.Items["User"];
+            var userObj = HttpContext.Items["User"];
+            var user = MapObjectToUserEntity(userObj!);
 
             if (user == null)
             {
                 throw new ErrorHandler("User doesn't exists", 400);
             }
+
+            var avatar = await _context.Avatars.Where(x => x.UserId == user.Id).FirstOrDefaultAsync();
+
+            // Create new avatar
+            user.Avatar = new Avatar
+            {
+                Id = avatar.Id,
+                PublicId = avatar.PublicId,
+                Url = avatar.SecureUrl.ToString(),
+                SecureUrl = avatar.SecureUrl.ToString(),
+
+            };
 
             return Ok(new
             {
@@ -305,12 +348,17 @@ namespace Ecommerce.API.Controllers
                 var uploadResult = await _cloudinaryService.UploadImageAsync(
                     avatarDto.ImageData, "avatars");
 
-                // Create new avatar
-                user.Avatar = new Avatar
+            
+
+                var avatar = new Avatar
                 {
                     PublicId = uploadResult.PublicId,
-                    Url = uploadResult.SecureUrl.ToString()
+                    Url = uploadResult.SecureUrl.ToString(),
+                    SecureUrl = uploadResult.SecureUrl.ToString(),
+                    UserId = user.Id
                 };
+
+                await _context.Avatars.AddAsync(avatar);
 
 
                 await _context.SaveChangesAsync();
