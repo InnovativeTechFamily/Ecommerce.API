@@ -3,7 +3,6 @@ using Ecommerce.API.Utils;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Ecommerce.API.Middleware

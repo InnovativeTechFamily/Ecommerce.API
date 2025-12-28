@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Ecommerce.API.Entities.Shops;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ecommerce.API.Entities.Products
@@ -35,14 +36,17 @@ namespace Ecommerce.API.Entities.Products
 
 		[Required]
 		[StringLength(50)]
-		public string ShopId { get; set; }
+		public Guid ShopId { get; set; }
 
 		public ProductStatus Status { get; set; } = ProductStatus.Draft;
 		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 		public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-	}
 
-	public enum ProductStatus
+        public virtual Shop Shop { get; set; } 
+
+    }
+
+    public enum ProductStatus
 	{
 		None = 0,
 		Draft = 1,

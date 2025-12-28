@@ -1,5 +1,6 @@
 ﻿
 using Ecommerce.API.Entities.Products;
+using Ecommerce.API.Entities.Shops;
 using Ecommerce.API.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,8 +18,9 @@ namespace Ecommerce.API.Data
         public DbSet<Avatar> Avatars { get; set; }
 
 		public DbSet<Product> Products { get; set; }
-
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<Shop> Shops { get; set; }           // Add Shops
+        public DbSet<ShopTransaction> ShopTransactions { get; set; }  // Add Transactions
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -40,7 +42,51 @@ namespace Ecommerce.API.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-           
+            // SHOP configuration (new)
+            modelBuilder.Entity<Shop>(entity =>
+            {
+                // Unique email index (like mongoose unique)
+                entity.HasIndex(s => s.Email).IsUnique();
+
+                // Required fields validation
+                entity.Property(s => s.Name).IsRequired();
+                entity.Property(s => s.Address).IsRequired();
+                entity.Property(s => s.PhoneNumber).IsRequired();
+                entity.Property(s => s.AvatarPublicId).IsRequired();
+                entity.Property(s => s.AvatarUrl).IsRequired();
+
+                // Password min length
+                entity.Property(s => s.PasswordHash);
+
+                // Defaults
+                entity.Property(s => s.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(s => s.Role).HasDefaultValue("Seller");
+                entity.Property(s => s.AvailableBalance).HasDefaultValue(0);
+
+                // Precision for balance
+                entity.Property(s => s.AvailableBalance).HasPrecision(18, 2);
+
+                // One-to-many: Shop -> Transactions
+                entity.HasMany(s => s.Transactions)
+                      .WithOne(t => t.Shop)
+                      .HasForeignKey(t => t.ShopId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Product foreign key (assuming ShopId in Product)
+                entity.HasMany(s => s.Products)  // Navigation property if exists
+                      .WithOne(p => p.Shop)      // Navigation property if exists
+                      .HasForeignKey(p => p.ShopId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // SHOP TRANSACTION configuration (new)
+            modelBuilder.Entity<ShopTransaction>(entity =>
+            {
+                entity.Property(t => t.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+                // Precision for amount
+                entity.Property(t => t.Amount).HasPrecision(18, 2);
+            });
 
             // Configure Product entity
             modelBuilder.Entity<Product>(entity =>
