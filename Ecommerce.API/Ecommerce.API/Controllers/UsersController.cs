@@ -305,7 +305,58 @@ namespace Ecommerce.API.Controllers
                 user
             });
         }
-      //  [Authorize]
+
+        [HttpPut("update-user-info")]
+        [IsAuthenticated]
+        public async Task<IActionResult> UpdateUserInfo([FromBody] UpdateUserInfoDto dto)
+        {
+            try
+            {
+                var email = dto.Email;
+                var password = dto.Password;
+                var phoneNumber = dto.PhoneNumber;
+                var name = dto.Name;
+
+                // Find user by email (like User.findOne({ email }).select("+password"))
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+                if (user == null)
+                {
+                    throw new ErrorHandler("User not found", 400);
+                }
+
+                // Verify password (like user.comparePassword(password))
+                var isPasswordValid = user.ComparePassword(password);
+
+                if (!isPasswordValid)
+                {
+                    throw new ErrorHandler(
+                        "Please provide the correct information",
+                        400
+                    );
+                }
+
+                // Update user fields (like user.name = name, etc.)
+                user.Name = name;
+                //user.Email = email;
+                user.PhoneNumber = phoneNumber;
+
+                // Save changes (like user.save())
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    user
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+        //  [Authorize]
         [HttpPost("upload-avatar")]
         [IsAuthenticated]
         public async Task<IActionResult> UploadAvatar([FromBody] AvatarUploadDto avatarDto)
@@ -378,6 +429,266 @@ namespace Ecommerce.API.Controllers
             {
                 _logger.LogError(ex, "Error uploading avatar");
                 throw new ErrorHandler($"Failed to upload avatar: {ex.Message}", 500);
+            }
+        }
+        [HttpPut("update-user-addresses")]
+        [IsAuthenticated]
+        public async Task<IActionResult> UpdateUserAddresses([FromBody] UpdateUserAddressDto dto)
+        {
+            try
+            {
+                // User loaded by IsAuthenticatedAttribute (like req.user)
+                var userId = (HttpContext.Items["User"] as User)?.Id;
+
+                if (userId == null)
+                {
+                    throw new ErrorHandler("User not found", 400);
+                }
+
+                var user = await _context.Users
+                    .Include(u => u.Addresses)  // Include addresses collection
+                    .FirstAsync(u => u.Id == userId);
+
+                // Check if same type address already exists
+                var sameTypeAddress = user.Addresses
+                    .FirstOrDefault(a => a.AddressType == dto.AddressType);
+
+                if (sameTypeAddress != null)
+                {
+                    throw new ErrorHandler(
+                        $"{dto.AddressType} address already exists",
+                        400
+                    );
+                }
+
+                // Find existing address by ID
+                var existsAddress = user.Addresses
+                    .FirstOrDefault(a => a.Id == dto.Id);
+
+                if (existsAddress != null)
+                {
+                    // Update existing address (like Object.assign)
+                    existsAddress.Address1 = dto.AddressLine1;
+                    existsAddress.Address2 = dto.AddressLine2;
+                    existsAddress.City = dto.City;
+                   // existsAddress.State = dto.State;
+                    existsAddress.ZipCode = dto.ZipCode;
+                    existsAddress.AddressType = dto.AddressType;
+                }
+                else
+                {
+                    // Add new address to collection (like user.addresses.push)
+                    user.Addresses.Add(new UserAddress
+                    {
+                        Address1 = dto.AddressLine1,
+                        Address2 = dto.AddressLine2,
+                        City = dto.City,
+                      //  State = dto.State,
+                        ZipCode = dto.ZipCode,
+                        AddressType = dto.AddressType,
+                        UserId = user.Id
+                    });
+                }
+
+                // Save changes (like user.save())
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    user
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new   ErrorHandler(ex.Message, 500);
+            }
+        }
+        [HttpDelete("delete-user-address/{id}")]
+        [IsAuthenticated]
+        public async Task<IActionResult> DeleteUserAddress(int id)
+        {
+            try
+            {
+                // User ID from IsAuthenticatedAttribute (like req.user._id)
+                var userId = (HttpContext.Items["User"] as User)?.Id;
+
+                if (userId == null)
+                {
+                    throw new ErrorHandler("User not found", 400);
+                }
+
+                // Equivalent to User.updateOne({ _id: userId }, { $pull: { addresses: { _id: addressId } } })
+                var address = await _context.UserAddresses
+                    .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+
+                if (address == null)
+                {
+                    throw new ErrorHandler("Address not found", 404);
+                }
+
+                _context.UserAddresses.Remove(address);
+                await _context.SaveChangesAsync();
+
+                // Get updated user (like User.findById(userId))
+                var user = await _context.Users
+                    .Include(u => u.Addresses)
+                    .FirstAsync(u => u.Id == userId);
+
+                return Ok(new
+                {
+                    success = true,
+                    user
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+        [HttpPut("update-user-password")]
+        [IsAuthenticated]
+        public async Task<IActionResult> UpdateUserPassword([FromBody] UpdateUserPasswordDto dto)
+        {
+            try
+            {
+                // Get user ID from IsAuthenticatedAttribute (like req.user.id)
+                var userId = (HttpContext.Items["User"] as User)?.Id;
+
+                if (userId == null)
+                {
+                    throw new ErrorHandler("User not found", 400);
+                }
+
+                // Find user with password (like User.findById(req.user.id).select("+password"))
+                var user = await _context.Users.FindAsync(userId);
+
+                if (user == null)
+                {
+                    throw new ErrorHandler("User not found", 400);
+                }
+
+                // Verify old password (like user.comparePassword(oldPassword))
+                var isPasswordMatched = user.ComparePassword(dto.OldPassword);
+
+                if (!isPasswordMatched)
+                {
+                    throw new ErrorHandler("Old password is incorrect!", 400);
+                }
+
+                // Check if new password matches confirm password
+                if (dto.NewPassword != dto.ConfirmPassword)
+                {
+                    throw new ErrorHandler(
+                        "Password doesn't matched with each other!",
+                        400
+                    );
+                }
+
+                // Update password (hash automatically via SetPassword)
+                user.SetPassword(dto.NewPassword);
+
+                // Save changes (like user.save())
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Password updated successfully!"
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+        [HttpGet("user-info/{id}")]
+        public async Task<IActionResult> GetUserInfo(Guid id)
+        {
+            try
+            {
+                // Equivalent to User.findById(req.params.id)
+                var user = await _context.Users.FindAsync(id);
+
+                if (user == null)
+                {
+                    throw new ErrorHandler("User not found", 404);
+                }
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    user
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+        [HttpGet("admin-all-users")]
+        [IsAuthenticated]  // your existing attribute
+        [IsAdmin("Admin")]  // existing attribute
+        public async Task<IActionResult> AdminAllUsers()
+        {
+            try
+            {
+                // Equivalent to User.find().sort({ createdAt: -1 })
+                var users = await _context.Users
+                    .OrderByDescending(u => u.CreatedAt)
+                    .ToListAsync();
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    users
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+
+        [HttpDelete("delete-user/{id}")]
+        [IsAuthenticated]  // your existing attribute
+        [IsAdmin("Admin")]  // existing attribute
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            try
+            {
+                // Equivalent to User.findById(req.params.id)
+                var user = await _context.Users.FindAsync(id);
+
+                if (user == null)
+                {
+                    throw new ErrorHandler(
+                        "User is not available with this id",
+                        400
+                    );
+                }
+
+                /*
+                // Uncomment if avatar deletion needed (like cloudinary.v2.uploader.destroy)
+                if (!string.IsNullOrEmpty(user.AvatarPublicId))
+                {
+                    await _cloudinary.DeleteImageAsync(user.AvatarPublicId);
+                }
+                */
+
+                // Equivalent to User.findByIdAndDelete(req.params.id)
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    message = "User deleted successfully!"
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
             }
         }
 

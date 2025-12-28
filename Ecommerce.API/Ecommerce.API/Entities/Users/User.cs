@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ecommerce.API.Entities.Users
 {
@@ -33,5 +34,19 @@ namespace Ecommerce.API.Entities.Users
         public string? ResetPasswordToken { get; set; }
 
         public DateTime? ResetPasswordTokenExpiry { get; set; }
+
+        // Hash and set password (equivalent to pre("save") + bcrypt.hash)
+        public void SetPassword(string plainPassword)
+        {
+            Password = BCrypt.Net.BCrypt.HashPassword(plainPassword); // bcrypt
+        }
+        // Compare password (equivalent to comparePassword)
+        public bool ComparePassword(string enteredPassword)
+        {
+            if (string.IsNullOrEmpty(Password))
+                return false;
+
+            return BCrypt.Net.BCrypt.Verify(enteredPassword, Password);
+        }
     }
 }

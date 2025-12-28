@@ -11,4 +11,5 @@
         public DateTime CreatedAt { get; set; }
         public List<UserAddressDto> Addresses { get; set; }
     }
+
 }
