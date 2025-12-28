@@ -2,6 +2,7 @@
 using Ecommerce.API.DTOs.Shop;
 using Ecommerce.API.DTOs.User;
 using Ecommerce.API.Entities.Shops;
+using Ecommerce.API.Middleware;
 using Ecommerce.API.Services;
 using Ecommerce.API.Utils;
 using Microsoft.AspNetCore.Http;
@@ -176,7 +177,69 @@ namespace Ecommerce.API.Controllers
                 throw new ErrorHandler(ex.Message, 500);
             }
         }
+        [HttpPost("login-shop")]
+        public async Task<IActionResult> LoginShop([FromBody] ShopLoginDto dto)
+        {
+            try
+            {
+                var email = dto.Email;
+                var password = dto.Password;
 
+                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                {
+                    throw new ErrorHandler("Please provide the all fields!", 400);
+                }
+
+                // Equivalent to Shop.findOne({ email }).select("+password")
+                var shop = await _db.Shops
+                    .FirstOrDefaultAsync(s => s.Email == email);
+
+                if (shop == null)
+                {
+                    throw new ErrorHandler("Seller doesn't exists!", 400);
+                }
+
+                // Compare password (equivalent to shop.comparePassword(password))
+                var isPasswordValid = shop.ComparePassword(password); // uses BCrypt.Verify inside
+
+                if (!isPasswordValid)
+                {
+                    throw new ErrorHandler(
+                        "Please provide the correct information",
+                        400
+                    );
+                }
+
+                // sendShopToken(shop, 201, res);
+                return SendShopTokenResult(shop);
+            }
+            catch (ErrorHandler)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+        [HttpGet("getSeller")]
+        [IsSeller] // like isSeller middleware
+        public IActionResult GetSeller()
+        {
+            // Seller loaded by IsSellerAttribute
+            var seller = HttpContext.Items["Seller"] as Shop;
+
+            if (seller == null)
+            {
+                throw new ErrorHandler("Seller doesn't exists", 400);
+            }
+
+            return Ok(new
+            {
+                success = true,
+                seller
+            });
+        }
         // Verify activation token (equivalent to jwt.verify)
         private ShopActivationData? VerifyActivationToken(string token)
         {
@@ -295,7 +358,7 @@ namespace Ecommerce.API.Controllers
         // In ShopController.cs
         private void SendShopToken(Shop shop, int statusCode)
         {
-            var token = shop.GetJwtToken(_config["JWT_SECRET_KEY"]!, TimeSpan.FromDays(90)); // 90 days
+            var token = shop.GetJwtToken(_config["Activation:SecretKey"]!, TimeSpan.FromDays(90)); // 90 days
 
             Response.Cookies.Append("seller_token", token, new CookieOptions
             {
@@ -322,7 +385,7 @@ namespace Ecommerce.API.Controllers
         // Alternative: Return IActionResult for cleaner controller usage
         private IActionResult SendShopTokenResult(Shop shop)
         {
-            var token = shop.GetJwtToken(_config["JWT_SECRET_KEY"]!, TimeSpan.FromDays(90));
+            var token = shop.GetJwtToken(_config["Activation:SecretKey"]!, TimeSpan.FromDays(90));
 
             Response.Cookies.Append("seller_token", token, new CookieOptions
             {

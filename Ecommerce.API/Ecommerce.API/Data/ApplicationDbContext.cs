@@ -56,7 +56,7 @@ namespace Ecommerce.API.Data
                 entity.Property(s => s.AvatarUrl).IsRequired();
 
                 // Password min length
-                entity.Property(s => s.PasswordHash).HasMaxLength(6);
+                entity.Property(s => s.PasswordHash);
 
                 // Defaults
                 entity.Property(s => s.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
