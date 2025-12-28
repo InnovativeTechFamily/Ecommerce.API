@@ -288,7 +288,7 @@ namespace Ecommerce.API.Controllers
             }
 
             var avatar = await _context.Avatars.Where(x => x.UserId == user.Id).FirstOrDefaultAsync();
-
+            if(avatar != null)
             // Create new avatar
             user.Avatar = new Avatar
             {
