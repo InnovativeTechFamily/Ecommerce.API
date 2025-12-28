@@ -1,5 +1,7 @@
 ﻿using Ecommerce.API.Data;
 using Ecommerce.API.DTOs.Products;
+using Ecommerce.API.Entities.Shops;
+using Ecommerce.API.Middleware;
 using Ecommerce.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +22,7 @@ namespace Ecommerce.API.Controllers
 		}
 
 		[HttpPost("create-product")]
+		[IsSeller]
 		public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
 		{
 			try
@@ -47,8 +50,8 @@ namespace Ecommerce.API.Controllers
 						message = "Discount price cannot be greater than original price"
 					});
 				}
-
-				var product = await _productService.CreateProductAsync(createProductDto);
+                var seller = HttpContext.Items["Seller"] as Shop;
+                var product = await _productService.CreateProductAsync(seller.Id,createProductDto);
 
 				return Ok(new
 				{
@@ -64,7 +67,7 @@ namespace Ecommerce.API.Controllers
 						originalPrice = product.OriginalPrice,
 						discountPrice = product.DiscountPrice,
 						stock = product.Stock,
-						shopId = product.ShopId,
+						shopId = seller.Id,
 						status = product.Status,
 						createdAt = product.CreatedAt
 					}

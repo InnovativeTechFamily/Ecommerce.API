@@ -14,7 +14,7 @@ namespace Ecommerce.API.Services
 			_context = context;
 		}
 
-		public async Task<Product> CreateProductAsync(CreateProductDto createProductDto)
+		public async Task<Product> CreateProductAsync(Guid SellerId,CreateProductDto createProductDto)
 		{
 			// Simple mapping from DTO to entity
 			var product = new Product
@@ -26,7 +26,7 @@ namespace Ecommerce.API.Services
 				OriginalPrice = createProductDto.OriginalPrice,
 				DiscountPrice = createProductDto.DiscountPrice,
 				Stock = createProductDto.Stock,
-				ShopId = createProductDto.ShopId,
+				ShopId = SellerId,
 				Status = ProductStatus.Draft, // Default status
 				CreatedAt = DateTime.UtcNow
 			};
