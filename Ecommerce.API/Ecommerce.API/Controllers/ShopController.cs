@@ -1,4 +1,5 @@
 ﻿using Ecommerce.API.Data;
+using Ecommerce.API.DTOs;
 using Ecommerce.API.DTOs.Shop;
 using Ecommerce.API.DTOs.User;
 using Ecommerce.API.Entities.Shops;
@@ -240,8 +241,264 @@ namespace Ecommerce.API.Controllers
                 seller
             });
         }
-        // Verify activation token (equivalent to jwt.verify)
-        private ShopActivationData? VerifyActivationToken(string token)
+        [HttpGet("logout")]
+        [IsSeller] // like isSeller middleware
+        public IActionResult Logout()
+        {
+            try
+            {
+                // Clear seller_token cookie (equivalent to res.cookie("seller_token", null, ...))
+                Response.Cookies.Append("seller_token", string.Empty, new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow,  // expire immediately (like new Date(Date.now()))
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.None,
+                    Secure = true
+                });
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    message = "Log out successful!"
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+        [HttpGet("get-shop-info/{id}")]
+        public async Task<IActionResult> GetShopInfo(Guid id)
+        {
+            try
+            {
+                // Equivalent to Shop.findById(req.params.id)
+                var shop = await _db.Shops.FindAsync(id);
+
+                if (shop == null)
+                {
+                    throw new ErrorHandler("Shop not found", 404);
+                }
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    shop
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+        [HttpPut("update-shop-avatar")]
+        [IsSeller]
+        public async Task<IActionResult> UpdateShopAvatar([FromBody] UpdateAvatarDto dto)
+        {
+            try
+            {
+                // Seller loaded by IsSellerAttribute (like req.seller)
+                var seller = HttpContext.Items["Seller"] as Shop;
+
+                if (seller == null)
+                {
+                    throw new ErrorHandler("Seller not found", 400);
+                }
+
+                // Delete old image from Cloudinary (like cloudinary.v2.uploader.destroy)
+                if (!string.IsNullOrEmpty(seller.AvatarPublicId))
+                {
+                    await _cloudinaryService.DeleteImageAsync(seller.AvatarPublicId);
+                }
+                CloudinaryUploadResponse? cloudinaryAvatar = null;
+                // Upload new image (like cloudinary.v2.uploader.upload)
+                var uploadResult = await _cloudinaryService.UploadImageAsync(dto.Avatar.Base64Data, "avatars");
+                cloudinaryAvatar = new CloudinaryUploadResponse
+                {
+                    PublicId = uploadResult.PublicId,
+                    Url = uploadResult.Url.ToString(),
+                    SecureUrl = uploadResult.SecureUrl.ToString()
+                };
+                // Update avatar fields
+                seller.AvatarPublicId = cloudinaryAvatar.PublicId;
+                seller.AvatarUrl = cloudinaryAvatar.SecureUrl;
+
+                // Save changes (like existsSeller.save())
+                _db.Shops.Update(seller);
+                await _db.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    seller
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+        [HttpPut("update-seller-info")]
+        [IsSeller]
+        public async Task<IActionResult> UpdateSellerInfo([FromBody] UpdateSellerInfoDto dto)
+        {
+            try
+            {
+                // Seller loaded by IsSellerAttribute (like req.seller)
+                var shop = HttpContext.Items["Seller"] as Shop;
+
+                if (shop == null)
+                {
+                    throw new ErrorHandler("User not found", 400);
+                }
+
+                // Update fields (like shop.name = name, etc.)
+                shop.Name = dto.Name;
+                shop.Description = dto.Description;
+                shop.Address = dto.Address;
+                shop.PhoneNumber = dto.PhoneNumber;
+                shop.ZipCode = int.Parse(dto.ZipCode);
+
+                // Save changes (like shop.save())
+                _db.Shops.Update(shop);
+                await _db.SaveChangesAsync();
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    shop
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+        [HttpGet("admin-all-sellers")]
+        [IsAuthenticated]  // your existing attribute
+        [IsAdmin("Admin")]  // new attribute
+        public async Task<IActionResult> AdminAllSellers()
+        {
+            try
+            {
+                // Equivalent to Shop.find().sort({ createdAt: -1 })
+                var sellers = await _db.Shops
+                    .OrderByDescending(s => s.CreatedAt)
+                    .ToListAsync();
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    sellers
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+        [HttpDelete("delete-seller/{id}")]
+        [IsAuthenticated]  // your existing attribute
+        [IsAdmin("Admin")]  // existing attribute
+        public async Task<IActionResult> DeleteSeller(Guid id)
+        {
+            try
+            {
+                // Equivalent to Shop.findById(req.params.id)
+                var seller = await _db.Shops.FindAsync(id);
+
+                if (seller == null)
+                {
+                    throw new ErrorHandler(
+                        "Seller is not available with this id",
+                        400
+                    );
+                }
+
+                // Equivalent to Shop.findByIdAndDelete(req.params.id)
+                _db.Shops.Remove(seller);
+                await _db.SaveChangesAsync();
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    message = "Seller deleted successfully!"
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+
+
+        [HttpPut("update-payment-methods")]
+        [IsSeller]
+        public async Task<IActionResult> UpdatePaymentMethods([FromBody] UpdatePaymentMethodDto dto)
+        {
+            try
+            {
+                // Seller loaded by IsSellerAttribute (like req.seller)
+                var seller = HttpContext.Items["Seller"] as Shop;
+
+                if (seller == null)
+                {
+                    throw new ErrorHandler("Seller not found", 400);
+                }
+
+                // Update withdrawMethod (like Shop.findByIdAndUpdate)
+                seller.WithdrawMethodJson = dto.WithdrawMethodJson;
+
+                // Save changes
+                _db.Shops.Update(seller);
+                await _db.SaveChangesAsync();
+
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    seller
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
+
+            [HttpDelete("delete-withdraw-method")]
+            [IsSeller]
+            public async Task<IActionResult> DeleteWithdrawMethod()
+            {
+                try
+                {
+                    // Seller loaded by IsSellerAttribute (like req.seller)
+                    var seller = HttpContext.Items["Seller"] as Shop;
+
+                    if (seller == null)
+                    {
+                        throw new ErrorHandler("Seller not found with this id", 400);
+                    }
+
+                    // Clear withdraw method (like seller.withdrawMethod = null)
+                    seller.WithdrawMethodJson = null;
+
+                    // Save changes (like seller.save())
+                    _db.Shops.Update(seller);
+                    await _db.SaveChangesAsync();
+
+                    return StatusCode(StatusCodes.Status201Created, new
+                    {
+                        success = true,
+                        seller
+                    });
+                }
+                catch (Exception ex)
+                {
+                    throw new ErrorHandler(ex.Message, 500);
+                }
+            }
+            // Verify activation token (equivalent to jwt.verify)
+            private ShopActivationData? VerifyActivationToken(string token)
         {
             try
             {
