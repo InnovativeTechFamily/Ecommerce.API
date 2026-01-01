@@ -130,7 +130,8 @@ namespace Ecommerce.API.Controllers
 				}
 			}
 		[HttpGet("GetAllProduct")]
-		public async Task<IActionResult> GetAllProducts()
+        [IsSeller]
+        public async Task<IActionResult> GetAllProducts()
 		{
 			try
 			{

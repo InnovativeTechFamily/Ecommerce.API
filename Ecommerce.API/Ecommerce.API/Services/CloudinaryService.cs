@@ -84,5 +84,25 @@ namespace Ecommerce.API.Services
                 throw;
             }
         }
+        public async Task<CloudinaryUploadResult> UploadBase64ImageAsync(string base64Image, string folder)
+        {
+            // base64Image: "data:image/png;base64,...." or pure base64 string
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(base64Image),
+                Folder = folder
+            };
+
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+            if (uploadResult.Error != null)
+                throw new Exception(uploadResult.Error.Message);
+
+            return new CloudinaryUploadResult
+            {
+                PublicId = uploadResult.PublicId,
+                ImageUrl = uploadResult.SecureUrl?.ToString() ?? string.Empty
+            };
+        }
     }
 }
