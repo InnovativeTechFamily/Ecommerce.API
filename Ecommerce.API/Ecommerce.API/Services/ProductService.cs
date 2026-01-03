@@ -14,7 +14,7 @@ namespace Ecommerce.API.Services
 			_context = context;
 		}
 
-		public async Task<Product> CreateProductAsync(Guid SellerId,CreateProductDto createProductDto)
+		public async Task<Product> CreateProductAsync(Guid sellerId, CreateProductDto createProductDto)
 		{
 			// Simple mapping from DTO to entity
 			var product = new Product
@@ -26,7 +26,7 @@ namespace Ecommerce.API.Services
 				OriginalPrice = createProductDto.OriginalPrice,
 				DiscountPrice = createProductDto.DiscountPrice,
 				Stock = createProductDto.Stock,
-				ShopId = SellerId,
+				ShopId = sellerId,
 				Status = ProductStatus.Draft, // Default status
 				CreatedAt = DateTime.UtcNow
 			};
@@ -36,9 +36,9 @@ namespace Ecommerce.API.Services
 
 			return product;
 		}
-		public async Task<ProductResponseDto> GetProductByIdAsync(int productId)
+		public async Task<ProductResponseDto> GetProductByIdAsync(Guid sellerId, int productId)
 		{
-			var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId); // Fixed parameter name
+			var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId && p.ShopId== sellerId); // Fixed parameter name
 
 			if (product == null)
 			{
@@ -56,7 +56,7 @@ namespace Ecommerce.API.Services
 				OriginalPrice = product.OriginalPrice,
 				DiscountPrice = product.DiscountPrice,
 				Stock = product.Stock,
-				ShopId = product.ShopId,
+				ShopId = sellerId,
 				Status = (int)product.Status,
 				CreatedAt = product.CreatedAt
 			};
