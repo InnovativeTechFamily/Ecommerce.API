@@ -1,6 +1,8 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Ecommerce.API.Data;
 using Ecommerce.API.DTOs.Cloudinary;
+using Ecommerce.API.Entities;
 using Microsoft.Extensions.Options;
 
 namespace Ecommerce.API.Services
@@ -10,9 +12,11 @@ namespace Ecommerce.API.Services
     {
         private readonly Cloudinary _cloudinary;
         private readonly ILogger<CloudinaryService> _logger;
+        private readonly ApplicationDbContext _db;
 
         public CloudinaryService(IOptions<CloudinarySettings> cloudinaryConfig,
-            ILogger<CloudinaryService> logger)
+            ILogger<CloudinaryService> logger,
+            ApplicationDbContext db)
         {
             var settings = cloudinaryConfig.Value;
             var account = new Account(
@@ -22,6 +26,7 @@ namespace Ecommerce.API.Services
 
             _cloudinary = new Cloudinary(account);
             _logger = logger;
+            _db = db;
         }
 
         public async Task<ImageUploadResult> UploadImageAsync(string imageData, string folder = "avatars")
@@ -84,6 +89,39 @@ namespace Ecommerce.API.Services
                 throw;
             }
         }
+        public async Task<Media> UploadBase64ImageAndCreateMediaAsync(
+     string base64Image,
+     string folder,
+     string? entityType = null,  // "Product", "User"
+     string? entityId = null)    // "p_xxx", "u_xxx"
+        {
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(base64Image),
+                Folder = folder
+            };
+
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+            if (uploadResult.Error != null)
+                throw new Exception(uploadResult.Error.Message);
+
+            var media = new Media
+            {
+                PublicId = uploadResult.PublicId,
+                Url = uploadResult.SecureUrl?.ToString() ?? string.Empty,
+                Folder = folder,
+                EntityType = entityType,
+                EntityId = entityId
+            };
+
+            _db.Media.Add(media);
+            await _db.SaveChangesAsync();
+
+            return media;
+        }
+
+
         public async Task<CloudinaryUploadResult> UploadBase64ImageAsync(string base64Image, string folder)
         {
             // base64Image: "data:image/png;base64,...." or pure base64 string
