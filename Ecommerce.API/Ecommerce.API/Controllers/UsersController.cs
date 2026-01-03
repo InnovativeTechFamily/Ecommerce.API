@@ -274,39 +274,35 @@ namespace Ecommerce.API.Controllers
                 throw new ErrorHandler(ex.Message, 500);
             }
         }
-        [HttpGet("getUser")]
-        [IsAuthenticated] // like isAuthenticated middleware
-        public async Task<IActionResult> GetUser()
-        {
-            // user was loaded in IsAuthenticatedAttribute
-            var userObj = HttpContext.Items["User"];
-            var user = MapObjectToUserEntity(userObj!);
+		[HttpGet("getUser")]
+		[IsAuthenticated]
+		public async Task<IActionResult> GetUser()
+		{
+			var tokenUser = HttpContext.Items["User"] as User;
 
-            if (user == null)
-            {
-                throw new ErrorHandler("User doesn't exists", 400);
-            }
+			if (tokenUser == null)
+				throw new ErrorHandler("User doesn't exist", 400);
 
-            var avatar = await _context.Avatars.Where(x => x.UserId == user.Id).FirstOrDefaultAsync();
-            if(avatar != null)
-            // Create new avatar
-            user.Avatar = new Avatar
-            {
-                Id = avatar.Id,
-                PublicId = avatar.PublicId,
-                Url = avatar.SecureUrl.ToString(),
-                SecureUrl = avatar.SecureUrl.ToString(),
+			var user = await _context.Users
+				.Include(u => u.Addresses)
+				.Include(u => u.Avatar)
+				.FirstOrDefaultAsync(u => u.Id == tokenUser.Id);
 
-            };
+			if (user == null)
+				throw new ErrorHandler("User doesn't exist", 400);
 
-            return Ok(new
-            {
-                success = true,
-                user
-            });
-        }
+			// ✅ USE EXISTING MAPPER
+			var response = MapUserToDto(user);
 
-        [HttpPut("update-user-info")]
+			return Ok(new
+			{
+				success = true,
+				user = response
+			});
+		}
+
+
+		[HttpPut("update-user-info")]
         [IsAuthenticated]
         public async Task<IActionResult> UpdateUserInfo([FromBody] UpdateUserInfoDto dto)
         {
@@ -431,9 +427,72 @@ namespace Ecommerce.API.Controllers
                 throw new ErrorHandler($"Failed to upload avatar: {ex.Message}", 500);
             }
         }
-        [HttpPut("update-user-addresses")]
+
+
+		[HttpPost("addresses")]
+		[IsAuthenticated]
+		public async Task<IActionResult> CreateUserAddresses([FromBody] CreateUserAddressDto createUserAddressDto)
+		{
+			try
+			{
+				// User loaded by IsAuthenticatedAttribute (like req.user)
+				var userId = (HttpContext.Items["User"] as User)?.Id;
+
+				if (userId == null)
+				{
+					throw new ErrorHandler("User not found", 400);
+				}
+
+
+                if(AddressType.Home.ToString() != createUserAddressDto.AddressType && AddressType.Office.ToString() != createUserAddressDto.AddressType)
+                {
+					throw new ErrorHandler(
+						$"{createUserAddressDto.AddressType} Please Select AddressType Either Home Or Office ",
+						400
+					);
+				}
+
+				var isUserExist = await _context.UserAddresses.AnyAsync(u => u.UserId == userId && u.AddressType == createUserAddressDto.AddressType);
+                if (isUserExist) 
+                {
+                    return BadRequest(new ErrorHandler("An address with this AddressType already exists for this user.", 400));
+				}
+
+				// Add new address to collection (like user.addresses.push)
+				var add =new UserAddress
+					{
+						Address1 = createUserAddressDto.AddressLine1,
+						Address2 = createUserAddressDto.AddressLine2,
+						City = createUserAddressDto.City,
+						State = createUserAddressDto.State,
+                        Country = createUserAddressDto.Country,
+						ZipCode = createUserAddressDto.ZipCode,
+						AddressType = createUserAddressDto.AddressType,
+                        UserId = userId.Value
+					};
+
+                await _context.UserAddresses.AddAsync(add);
+
+
+				// Save changes (like user.save())
+				await _context.SaveChangesAsync();
+
+				return Ok(new
+				{
+					success = true,
+					message = "Address Created successfully!"
+				});
+			}
+			catch (Exception ex)
+			{
+				throw new ErrorHandler(ex.Message, 500);
+			}
+		}
+
+
+		[HttpPut("update-user-addresses")]
         [IsAuthenticated]
-        public async Task<IActionResult> UpdateUserAddresses([FromBody] UpdateUserAddressDto dto)
+        public async Task<IActionResult> UpdateUserAddresses([FromBody] UpdateUserAddressDto updateUserAddressDto)
         {
             try
             {
@@ -449,55 +508,47 @@ namespace Ecommerce.API.Controllers
                     .Include(u => u.Addresses)  // Include addresses collection
                     .FirstAsync(u => u.Id == userId);
 
-                // Check if same type address already exists
-                var sameTypeAddress = user.Addresses
-                    .FirstOrDefault(a => a.AddressType == dto.AddressType);
-
-                if (sameTypeAddress != null)
+                if (AddressType.Home.ToString() != updateUserAddressDto.AddressType && AddressType.Office.ToString() != updateUserAddressDto.AddressType)
                 {
                     throw new ErrorHandler(
-                        $"{dto.AddressType} address already exists",
+                        $"{updateUserAddressDto.AddressType} Please Select AddressType Either Home Or Office ",
                         400
                     );
                 }
 
                 // Find existing address by ID
                 var existsAddress = user.Addresses
-                    .FirstOrDefault(a => a.Id == dto.Id);
+                    .FirstOrDefault(a => a.Id == updateUserAddressDto.Id);
+
 
                 if (existsAddress != null)
                 {
                     // Update existing address (like Object.assign)
-                    existsAddress.Address1 = dto.AddressLine1;
-                    existsAddress.Address2 = dto.AddressLine2;
-                    existsAddress.City = dto.City;
-                   // existsAddress.State = dto.State;
-                    existsAddress.ZipCode = dto.ZipCode;
-                    existsAddress.AddressType = dto.AddressType;
+                    existsAddress.Address1 = updateUserAddressDto.AddressLine1;
+                    existsAddress.Address2 = updateUserAddressDto.AddressLine2;
+                    existsAddress.City = updateUserAddressDto.City;
+                    existsAddress.State = updateUserAddressDto.State;
+                    existsAddress.Country = updateUserAddressDto.Country;
+                    existsAddress.ZipCode = updateUserAddressDto.ZipCode;
+                    existsAddress.AddressType = updateUserAddressDto.AddressType;
                 }
                 else
-                {
-                    // Add new address to collection (like user.addresses.push)
-                    user.Addresses.Add(new UserAddress
-                    {
-                        Address1 = dto.AddressLine1,
-                        Address2 = dto.AddressLine2,
-                        City = dto.City,
-                      //  State = dto.State,
-                        ZipCode = dto.ZipCode,
-                        AddressType = dto.AddressType,
-                        UserId = user.Id
-                    });
-                }
-
+				{ 
+                     throw new ErrorHandler(
+						"aDDRE NOT FOUND",
+						400
+					);
+				}
+            
+                
                 // Save changes (like user.save())
                 await _context.SaveChangesAsync();
 
                 return Ok(new
                 {
                     success = true,
-                    user
-                });
+					message = "Address updated successfully!"
+				});
             }
             catch (Exception ex)
             {
@@ -535,11 +586,17 @@ namespace Ecommerce.API.Controllers
                     .Include(u => u.Addresses)
                     .FirstAsync(u => u.Id == userId);
 
-                return Ok(new
+				if (user == null)
+					throw new ErrorHandler("User doesn't exist", 400);
+
+				// ✅ USE EXISTING MAPPER
+				var response = MapUserToDto(user);
+
+				return Ok(new
                 {
                     success = true,
-                    user
-                });
+                    user = response
+				});
             }
             catch (Exception ex)
             {
@@ -906,7 +963,9 @@ namespace Ecommerce.API.Controllers
                 CreatedAt = user.CreatedAt,
                 Addresses = user.Addresses?.Select(a => new UserAddressDto
                 {
+                    Id = a.Id,
                     Country = a.Country,
+                    State = a.State,
                     City = a.City,
                     Address1 = a.Address1,
                     Address2 = a.Address2,
