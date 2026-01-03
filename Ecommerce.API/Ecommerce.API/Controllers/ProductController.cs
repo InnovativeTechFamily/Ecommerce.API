@@ -113,12 +113,12 @@ namespace Ecommerce.API.Controllers
 			// GET: api/products/{id}
 		[HttpGet("{id}")]
         [IsSeller]
-        public async Task<IActionResult> GetProduct(int id)
+        public async Task<IActionResult> GetProduct(string id)
 			{
 				try
 				{
 					// Validate ID
-					if (id <= 0)
+					if (string.IsNullOrEmpty(id))
 					{
 						return BadRequest(new
 						{
@@ -175,7 +175,7 @@ namespace Ecommerce.API.Controllers
 				}
 			}
 		[HttpGet("GetAllProduct")]
-        [IsSeller]
+       // [IsSeller]
         public async Task<IActionResult> GetAllProducts()
 		{
 			try
@@ -223,7 +223,8 @@ namespace Ecommerce.API.Controllers
 		}
 		// PUT: api/products/{id}
 		[HttpPut("{id}")]
-		public async Task<IActionResult> UpdateProduct(int id, [FromBody] CreateProductDto updateProductDto)
+        [IsSeller]
+        public async Task<IActionResult> UpdateProduct(string id, [FromBody] CreateProductDto updateProductDto)
 		{
 			try
 			{
@@ -240,7 +241,7 @@ namespace Ecommerce.API.Controllers
 					});
 				}
 
-				if (id <= 0)
+				if (!string.IsNullOrEmpty(id))
 				{
 					return BadRequest(new
 					{
@@ -288,11 +289,11 @@ namespace Ecommerce.API.Controllers
 
 		// DELETE: api/products/{id}
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteProduct(string id)
 		{
 			try
 			{
-				if (id <= 0)
+				if (!string.IsNullOrEmpty(id))
 				{
 					return BadRequest(new
 					{

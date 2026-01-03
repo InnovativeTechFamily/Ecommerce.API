@@ -36,7 +36,7 @@ namespace Ecommerce.API.Services
 
 			return product;
 		}
-		public async Task<ProductResponseDto> GetProductByIdAsync(Guid sellerId, int productId)
+		public async Task<ProductResponseDto> GetProductByIdAsync(Guid sellerId, string productId)
 		{
 			var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId && p.ShopId== sellerId); // Fixed parameter name
 
@@ -84,7 +84,7 @@ namespace Ecommerce.API.Services
 
 			return products;
 		}
-		public async Task<ProductResponseDto> UpdateProductAsync(int productId, CreateProductDto updateProductDto)
+		public async Task<ProductResponseDto> UpdateProductAsync(string productId, CreateProductDto updateProductDto)
 		{
 			var product = await _context.Products
 				.FirstOrDefaultAsync(p => p.Id == productId);
@@ -147,7 +147,7 @@ namespace Ecommerce.API.Services
 			};
 		}
 
-		public async Task<bool> DeleteProductAsync(int productId)
+		public async Task<bool> DeleteProductAsync(string productId)
 		{
 			var product = await _context.Products
 				.FirstOrDefaultAsync(p => p.Id == productId);
