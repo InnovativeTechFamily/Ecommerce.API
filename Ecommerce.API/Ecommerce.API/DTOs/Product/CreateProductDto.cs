@@ -30,7 +30,9 @@ namespace Ecommerce.API.DTOs.Products
 		public int Stock { get; set; }
 
 		[Required(ErrorMessage = "Shop ID is required")]
-		[StringLength(50, ErrorMessage = "Shop ID cannot exceed 50 characters")]
+	//	[StringLength(50, ErrorMessage = "Shop ID cannot exceed 50 characters")]
 		public Guid ShopId { get; set; }
-	}
+
+		public List<string>	Images { get; set; } = new List<string>();
+    }
 }

@@ -1,6 +1,10 @@
 ﻿using Ecommerce.API.Data;
+using Ecommerce.API.DTOs.Cloudinary;
 using Ecommerce.API.DTOs.Products;
+using Ecommerce.API.Entities.Shops;
+using Ecommerce.API.Middleware;
 using Ecommerce.API.Services;
+using Ecommerce.API.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,15 +15,18 @@ namespace Ecommerce.API.Controllers
 	public class ProductsController : ControllerBase
 	{
 		private readonly IProductService _productService;
-		private readonly ILogger<ProductsController> _logger;
+        private readonly ICloudinaryService _cloudinaryService;
+        private readonly ILogger<ProductsController> _logger;
 
-		public ProductsController(IProductService productService, ILogger<ProductsController> logger)
-		{
-			_productService = productService;
-			_logger = logger;
-		}
+        public ProductsController(IProductService productService, ILogger<ProductsController> logger, ICloudinaryService cloudinaryService)
+        {
+            _productService = productService;
+            _logger = logger;
+            _cloudinaryService = cloudinaryService;
+        }
 
-		[HttpPost("create-product")]
+        [HttpPost("create-product")]
+		[IsSeller]
 		public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
 		{
 			try
@@ -47,8 +54,20 @@ namespace Ecommerce.API.Controllers
 						message = "Discount price cannot be greater than original price"
 					});
 				}
+				//List<string> imageUrls = new List<string>();
+				////upload product image 
+				//if (createProductDto.Images.Count > 0)
+				//{
+				//	foreach (var img in createProductDto.Images)
+				//	{
+    //                    CloudinaryUploadResult url = await _cloudinaryService.UploadBase64ImageAsync(img, CloudinaryFolders.Products);
+				//		imageUrls.Add(url.ImageUrl);
+    //                }
+				//}
+				//createProductDto.Images = imageUrls;
 
-				var product = await _productService.CreateProductAsync(createProductDto);
+                var seller = HttpContext.Items["Seller"] as Shop;
+                var product = await _productService.CreateProductAsync(seller.Id,createProductDto);
 
 				return Ok(new
 				{
@@ -64,7 +83,7 @@ namespace Ecommerce.API.Controllers
 						originalPrice = product.OriginalPrice,
 						discountPrice = product.DiscountPrice,
 						stock = product.Stock,
-						shopId = product.ShopId,
+						shopId = seller.Id,
 						status = product.Status,
 						createdAt = product.CreatedAt
 					}
@@ -127,7 +146,8 @@ namespace Ecommerce.API.Controllers
 				}
 			}
 		[HttpGet("GetAllProduct")]
-		public async Task<IActionResult> GetAllProducts()
+        [IsSeller]
+        public async Task<IActionResult> GetAllProducts()
 		{
 			try
 			{

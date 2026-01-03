@@ -1,4 +1,6 @@
 ﻿
+using Ecommerce.API.Data.Configurations;
+using Ecommerce.API.Entities;
 using Ecommerce.API.Entities.Products;
 using Ecommerce.API.Entities.Shops;
 using Ecommerce.API.Entities.Users;
@@ -20,6 +22,8 @@ namespace Ecommerce.API.Data
 		public DbSet<Product> Products { get; set; }
         public DbSet<Shop> Shops { get; set; }           // Add Shops
         public DbSet<ShopTransaction> ShopTransactions { get; set; }  // Add Transactions
+
+        public DbSet<Media> Media { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -105,6 +109,12 @@ namespace Ecommerce.API.Data
 				entity.Property(p => p.UpdatedAt)
 				  .HasDefaultValueSql("GETUTCDATE()");
 			});
-		}
+
+            // other entity configurations...
+
+            modelBuilder.ApplyConfiguration(new MediaConfiguration());
+            // or: modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+        }
     }
 }
