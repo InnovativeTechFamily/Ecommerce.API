@@ -71,6 +71,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+builder.Services.AddScoped<IMediaService, MediaService>();
 // Add CORS
 builder.Services.AddCors(options =>
 {

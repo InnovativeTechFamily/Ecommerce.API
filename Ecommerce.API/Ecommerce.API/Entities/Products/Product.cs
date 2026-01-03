@@ -7,9 +7,12 @@ namespace Ecommerce.API.Entities.Products
 	public class Product
 	{
 		[Key]
-		public int Id { get; set; }
+        public string Id { get; set; } = NewId();   // "p_xxx"
 
-		[Required(ErrorMessage = "Please enter your product name!")]
+        public static string NewId() => $"p_{Guid.CreateVersion7()}";
+
+
+        [Required(ErrorMessage = "Please enter your product name!")]
 		[StringLength(200)]
 		public string Name { get; set; }
 
