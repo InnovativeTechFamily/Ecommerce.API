@@ -5,7 +5,7 @@ namespace Ecommerce.API.DTOs.Products
 {
 	public class ProductResponseDto
 	{
-		public int Id { get; set; }
+		public string Id { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public string Category { get; set; }
@@ -26,7 +26,7 @@ namespace Ecommerce.API.DTOs.Products
 
 	public class ProductImageResponseDto
 	{
-		public int Id { get; set; }
+		public string Id { get; set; }
 		public string PublicId { get; set; }
 		public string Url { get; set; }
 	}
