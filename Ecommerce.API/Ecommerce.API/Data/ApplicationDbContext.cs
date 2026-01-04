@@ -24,6 +24,8 @@ namespace Ecommerce.API.Data
         public DbSet<ShopTransaction> ShopTransactions { get; set; }  // Add Transactions
 
         public DbSet<Media> Media { get; set; }
+
+        public DbSet<Category> Categories { get; set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
