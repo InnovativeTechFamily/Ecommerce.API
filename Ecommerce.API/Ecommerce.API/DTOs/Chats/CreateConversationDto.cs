@@ -6,4 +6,5 @@
         public string UserId { get; set; } = default!;
         public string SellerId { get; set; } = default!;
     }
+
 }

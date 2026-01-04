@@ -30,6 +30,8 @@ namespace Ecommerce.API.Data
 
         public DbSet<Category> Categories { get; set;}
         public DbSet<Conversation> Conversations { get; set; }
+        // In ApplicationDbContext.cs
+        public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -159,6 +161,21 @@ namespace Ecommerce.API.Data
                 // Index for member lookups
                 entity.HasIndex(c => c.Members);
             });
+
+            //Message
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.HasKey(m => m.Id);
+                entity.Property(m => m.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(m => m.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+                // Index for fast conversation lookups
+                entity.HasIndex(m => m.ConversationId);
+
+                // Owned image (embedded)
+                entity.OwnsOne(m => m.Images);
+            });
+
         }
     }
 }
