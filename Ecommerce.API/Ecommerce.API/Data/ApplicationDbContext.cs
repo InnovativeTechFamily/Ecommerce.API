@@ -1,6 +1,7 @@
 ﻿
 using Ecommerce.API.Data.Configurations;
 using Ecommerce.API.Entities;
+using Ecommerce.API.Entities.Chats;
 using Ecommerce.API.Entities.Orders;
 using Ecommerce.API.Entities.Products;
 using Ecommerce.API.Entities.Shops;
@@ -28,6 +29,9 @@ namespace Ecommerce.API.Data
         public DbSet<Order> Orders { get; set; }
 
         public DbSet<Category> Categories { get; set;}
+        public DbSet<Conversation> Conversations { get; set; }
+        // In ApplicationDbContext.cs
+        public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -141,6 +145,35 @@ namespace Ecommerce.API.Data
             modelBuilder.Entity<OrderItem>(entity =>
             {
                 entity.HasKey(oi => oi.Id);
+            });
+
+
+            //Conversation
+            modelBuilder.Entity<Conversation>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+                entity.Property(c => c.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(c => c.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+                // Index for fast group title lookup
+                entity.HasIndex(c => c.GroupTitle);
+
+                // Index for member lookups
+                entity.HasIndex(c => c.Members);
+            });
+
+            //Message
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.HasKey(m => m.Id);
+                entity.Property(m => m.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(m => m.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+                // Index for fast conversation lookups
+                entity.HasIndex(m => m.ConversationId);
+
+                // Owned image (embedded)
+                entity.OwnsOne(m => m.Images);
             });
 
         }

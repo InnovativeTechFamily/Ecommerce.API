@@ -4,6 +4,7 @@ using Ecommerce.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260104105649_Conversationtable")]
+    partial class Conversationtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,39 +78,6 @@ namespace Ecommerce.API.Migrations
                     b.HasIndex("Members");
 
                     b.ToTable("Conversations");
-                });
-
-            modelBuilder.Entity("Ecommerce.API.Entities.Chats.Message", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConversationId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("Sender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConversationId");
-
-                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Ecommerce.API.Entities.Media", b =>
@@ -520,32 +490,6 @@ namespace Ecommerce.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserAddresses");
-                });
-
-            modelBuilder.Entity("Ecommerce.API.Entities.Chats.Message", b =>
-                {
-                    b.OwnsOne("Ecommerce.API.Entities.Chats.MessageImage", "Images", b1 =>
-                        {
-                            b1.Property<string>("MessageId")
-                                .HasColumnType("nvarchar(450)");
-
-                            b1.Property<string>("PublicId")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Url")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("MessageId");
-
-                            b1.ToTable("Messages");
-
-                            b1.WithOwner()
-                                .HasForeignKey("MessageId");
-                        });
-
-                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("Ecommerce.API.Entities.Orders.Order", b =>
