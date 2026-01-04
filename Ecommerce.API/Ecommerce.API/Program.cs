@@ -72,6 +72,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IMediaService, MediaService>();
+builder.Services.AddScoped<IOrderEmailService, OrderEmailService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // Add CORS
