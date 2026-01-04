@@ -1,6 +1,8 @@
 ﻿
 using Ecommerce.API.Data.Configurations;
 using Ecommerce.API.Entities;
+using Ecommerce.API.Entities.Chats;
+using Ecommerce.API.Entities.Orders;
 using Ecommerce.API.Entities.Event;
 using Ecommerce.API.Entities.Products;
 using Ecommerce.API.Entities.Shops;
@@ -26,6 +28,12 @@ namespace Ecommerce.API.Data
         public DbSet<Event> Events { get; set; }
 
         public DbSet<Media> Media { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<Category> Categories { get; set;}
+        public DbSet<Conversation> Conversations { get; set; }
+        // In ApplicationDbContext.cs
+        public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -149,6 +157,59 @@ namespace Ecommerce.API.Data
 
             modelBuilder.ApplyConfiguration(new MediaConfiguration());
             // or: modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+            //Order configuration
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.HasKey(o => o.Id);
+                entity.Property(o => o.Status).HasDefaultValue("Processing");
+                entity.Property(o => o.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+                entity.OwnsOne(o => o.ShippingAddress);
+                entity.OwnsOne(o => o.User, u =>
+                {
+                    u.OwnsMany(x => x.Addresses);
+                });
+                entity.OwnsOne(o => o.PaymentInfo);
+
+                entity.HasMany(o => o.Cart)
+                      .WithOne()
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<OrderItem>(entity =>
+            {
+                entity.HasKey(oi => oi.Id);
+            });
+
+
+            //Conversation
+            modelBuilder.Entity<Conversation>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+                entity.Property(c => c.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(c => c.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+                // Index for fast group title lookup
+                entity.HasIndex(c => c.GroupTitle);
+
+                // Index for member lookups
+                entity.HasIndex(c => c.Members);
+            });
+
+            //Message
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.HasKey(m => m.Id);
+                entity.Property(m => m.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(m => m.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+                // Index for fast conversation lookups
+                entity.HasIndex(m => m.ConversationId);
+
+                // Owned image (embedded)
+                entity.OwnsOne(m => m.Images);
+            });
 
         }
     }

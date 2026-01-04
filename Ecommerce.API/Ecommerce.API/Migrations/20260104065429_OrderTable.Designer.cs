@@ -4,6 +4,7 @@ using Ecommerce.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260104065429_OrderTable")]
+    partial class OrderTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,166 +24,6 @@ namespace Ecommerce.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Ecommerce.API.Entities.Category", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("Ecommerce.API.Entities.Chats.Conversation", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("GroupTitle")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LastMessage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastMessageId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.PrimitiveCollection<string>("Members")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupTitle");
-
-                    b.HasIndex("Members");
-
-                    b.ToTable("Conversations");
-                });
-
-            modelBuilder.Entity("Ecommerce.API.Entities.Chats.Message", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConversationId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("Sender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConversationId");
-
-                    b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("Ecommerce.API.Entities.Event.Event", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("DiscountPrice")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Finish_Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<decimal?>("OriginalPrice")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Shop")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShopId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("SoldOut")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Start_Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasDefaultValue("Running");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Tags")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Category");
-
-                    b.HasIndex("ShopId");
-
-                    b.HasIndex("Status");
-
-                    b.ToTable("Events");
-                });
 
             modelBuilder.Entity("Ecommerce.API.Entities.Media", b =>
                 {
@@ -196,9 +39,6 @@ namespace Ecommerce.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("EntityType")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EventId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FileName")
@@ -217,8 +57,6 @@ namespace Ecommerce.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EventId");
 
                     b.HasIndex("Folder");
 
@@ -338,9 +176,6 @@ namespace Ecommerce.API.Migrations
                     b.Property<Guid>("ShopId")
                         .HasMaxLength(50)
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("SoldOut")
-                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -599,32 +434,6 @@ namespace Ecommerce.API.Migrations
                     b.ToTable("UserAddresses");
                 });
 
-            modelBuilder.Entity("Ecommerce.API.Entities.Chats.Message", b =>
-                {
-                    b.OwnsOne("Ecommerce.API.Entities.Chats.MessageImage", "Images", b1 =>
-                        {
-                            b1.Property<string>("MessageId")
-                                .HasColumnType("nvarchar(450)");
-
-                            b1.Property<string>("PublicId")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Url")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("MessageId");
-
-                            b1.ToTable("Messages");
-
-                            b1.WithOwner()
-                                .HasForeignKey("MessageId");
-                        });
-
-                    b.Navigation("Images");
-                });
-
             modelBuilder.Entity("Ecommerce.API.Entities.Orders.Order", b =>
                 {
                     b.OwnsOne("Ecommerce.API.Entities.Orders.OrderUser", "User", b1 =>
@@ -766,13 +575,6 @@ namespace Ecommerce.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Ecommerce.API.Entities.Media", b =>
-                {
-                    b.HasOne("Ecommerce.API.Entities.Event.Event", null)
-                        .WithMany("Media")
-                        .HasForeignKey("EventId");
-                });
-
             modelBuilder.Entity("Ecommerce.API.Entities.Products.Product", b =>
                 {
                     b.HasOne("Ecommerce.API.Entities.Shops.Shop", "Shop")
@@ -820,11 +622,6 @@ namespace Ecommerce.API.Migrations
             modelBuilder.Entity("Ecommerce.API.Entities.Orders.Order", b =>
                 {
                     b.Navigation("Cart");
-                });
-
-            modelBuilder.Entity("Ecommerce.API.Entities.Event.Event", b =>
-                {
-                    b.Navigation("Media");
                 });
 
             modelBuilder.Entity("Ecommerce.API.Entities.Shops.Shop", b =>
