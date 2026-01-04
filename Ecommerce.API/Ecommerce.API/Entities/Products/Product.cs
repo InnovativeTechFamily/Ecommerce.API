@@ -36,6 +36,7 @@ namespace Ecommerce.API.Entities.Products
 
 		[Required(ErrorMessage = "Please enter your product stock!")]
 		public int Stock { get; set; }
+		public int SoldOut { get; set; }
 
 		[Required]
 		[StringLength(50)]
