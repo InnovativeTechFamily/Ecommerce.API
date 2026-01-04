@@ -1,6 +1,7 @@
 ﻿
 using Ecommerce.API.Data.Configurations;
 using Ecommerce.API.Entities;
+using Ecommerce.API.Entities.Event;
 using Ecommerce.API.Entities.Products;
 using Ecommerce.API.Entities.Shops;
 using Ecommerce.API.Entities.Users;
@@ -22,6 +23,7 @@ namespace Ecommerce.API.Data
 		public DbSet<Product> Products { get; set; }
         public DbSet<Shop> Shops { get; set; }           // Add Shops
         public DbSet<ShopTransaction> ShopTransactions { get; set; }  // Add Transactions
+        public DbSet<Event> Events { get; set; }
 
         public DbSet<Media> Media { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -109,6 +111,39 @@ namespace Ecommerce.API.Data
 				entity.Property(p => p.UpdatedAt)
 				  .HasDefaultValueSql("GETUTCDATE()");
 			});
+
+            // EVENT configuration
+            modelBuilder.Entity<Event>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Name)
+                      .IsRequired()
+                      .HasMaxLength(200);
+
+                entity.Property(e => e.Description)
+                      .IsRequired();
+
+                entity.Property(e => e.Category)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.Status)
+                      .HasDefaultValue("Running");
+
+                entity.Property(e => e.OriginalPrice)
+                      .HasPrecision(18, 2);
+
+                entity.Property(e => e.DiscountPrice)
+                      .HasPrecision(18, 2);
+
+                entity.Property(e => e.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.HasIndex(e => e.Category);
+                entity.HasIndex(e => e.ShopId);
+                entity.HasIndex(e => e.Status);
+            });
 
             // other entity configurations...
 
