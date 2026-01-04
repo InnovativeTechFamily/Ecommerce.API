@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/Ecommerce.API/Ecommerce.API/appsettings.Development.json

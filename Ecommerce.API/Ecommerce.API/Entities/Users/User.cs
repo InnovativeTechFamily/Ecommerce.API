@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ecommerce.API.Entities.Users
 {
     public class User
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Please enter your name!")]
         [StringLength(100)]
@@ -18,16 +19,15 @@ namespace Ecommerce.API.Entities.Users
 
         [Required(ErrorMessage = "Please enter your password")]
         [MinLength(4, ErrorMessage = "Password should be greater than 4 characters")]
-        public string PasswordHash { get; set; }
+        public string Password { get; set; }
 
         public string? PhoneNumber { get; set; }
 
-        public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
+        public virtual ICollection<UserAddress> Addresses { get; set; } = new List<UserAddress>();
 
-        [StringLength(50)]
         public string Role { get; set; } = "user";
 
-        public virtual Avatar? Avatar { get; set; }
+        public Avatar? Avatar { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -35,10 +35,18 @@ namespace Ecommerce.API.Entities.Users
 
         public DateTime? ResetPasswordTokenExpiry { get; set; }
 
-        public bool IsActive { get; set; } = false;
+        // Hash and set password (equivalent to pre("save") + bcrypt.hash)
+        public void SetPassword(string plainPassword)
+        {
+            Password = BCrypt.Net.BCrypt.HashPassword(plainPassword); // bcrypt
+        }
+        // Compare password (equivalent to comparePassword)
+        public bool ComparePassword(string enteredPassword)
+        {
+            if (string.IsNullOrEmpty(Password))
+                return false;
 
-        public string? ActivationToken { get; set; }
-
-        public DateTime? ActivationTokenExpiry { get; set; }
+            return BCrypt.Net.BCrypt.Verify(enteredPassword, Password);
+        }
     }
 }

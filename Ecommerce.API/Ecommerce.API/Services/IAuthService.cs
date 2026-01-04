@@ -6,10 +6,10 @@ namespace Ecommerce.API.Services
 {
     public interface IAuthService
     {
-        Task<UserResponseDto> CreateUserAsync(UserCreateDto userDto);
+        Task<UserResponseDto> CreateUserAsync(CreateUserDto userDto);
         Task<string> GenerateActivationToken(User user);
         string GenerateJwtToken(User user);
-        bool VerifyPassword(string password, string passwordHash);
+		Task<bool> VerifyLoginUser(LoginDto loginDto);
     }
 
 
