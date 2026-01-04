@@ -75,6 +75,8 @@ builder.Services.AddScoped<IMediaService, MediaService>();
 builder.Services.AddScoped<IOrderEmailService, OrderEmailService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
 // Add CORS
 builder.Services.AddCors(options =>
 {
