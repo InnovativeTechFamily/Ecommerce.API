@@ -1,7 +1,7 @@
-﻿using MailKit.Net.Smtp;
-using MimeKit;
+﻿using Ecommerce.API.DTOs;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
-using Ecommerce.API.DTOs;
+using MimeKit;
 
 namespace Ecommerce.API.Services
 {

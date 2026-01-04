@@ -1,6 +1,7 @@
 ﻿
 using Ecommerce.API.Data.Configurations;
 using Ecommerce.API.Entities;
+using Ecommerce.API.Entities.Orders;
 using Ecommerce.API.Entities.Products;
 using Ecommerce.API.Entities.Shops;
 using Ecommerce.API.Entities.Users;
@@ -24,6 +25,7 @@ namespace Ecommerce.API.Data
         public DbSet<ShopTransaction> ShopTransactions { get; set; }  // Add Transactions
 
         public DbSet<Media> Media { get; set; }
+        public DbSet<Order> Orders { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -114,6 +116,30 @@ namespace Ecommerce.API.Data
 
             modelBuilder.ApplyConfiguration(new MediaConfiguration());
             // or: modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+            //Order configuration
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.HasKey(o => o.Id);
+                entity.Property(o => o.Status).HasDefaultValue("Processing");
+                entity.Property(o => o.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+                entity.OwnsOne(o => o.ShippingAddress);
+                entity.OwnsOne(o => o.User, u =>
+                {
+                    u.OwnsMany(x => x.Addresses);
+                });
+                entity.OwnsOne(o => o.PaymentInfo);
+
+                entity.HasMany(o => o.Cart)
+                      .WithOne()
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<OrderItem>(entity =>
+            {
+                entity.HasKey(oi => oi.Id);
+            });
 
         }
     }
