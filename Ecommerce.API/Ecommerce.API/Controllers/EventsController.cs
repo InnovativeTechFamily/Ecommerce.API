@@ -149,6 +149,30 @@ namespace Ecommerce.API.Controllers
             });
         }
 
+        [HttpGet("{eventId}")]
+        public async Task<IActionResult> GetEventById(string eventId)
+        {
+            var evt = await _context.Events
+                .Include(e => e.Media)
+                .FirstOrDefaultAsync(e => e.Id == eventId);
+
+            if (evt == null)
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = "Event not found with the given id."
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message = "Event fetched successfully.",
+                data = evt
+            });
+        }
+
         [HttpDelete("{eventId}")]
         public async Task<IActionResult> DeleteEvent(string eventId)
         {
