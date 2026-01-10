@@ -1,6 +1,7 @@
 ﻿
 using Ecommerce.API.Data.Configurations;
 using Ecommerce.API.Entities;
+using Ecommerce.API.Entities.Coupons;
 using Ecommerce.API.Entities.Chats;
 using Ecommerce.API.Entities.Orders;
 using Ecommerce.API.Entities.Event;
@@ -29,7 +30,11 @@ namespace Ecommerce.API.Data
 
         public DbSet<Media> Media { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Category> Categories { get; set;}
+		public DbSet<Coupon> Coupons { get; set; }
 
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         public DbSet<Category> Categories { get; set;}
         public DbSet<Conversation> Conversations { get; set; }
         // In ApplicationDbContext.cs
