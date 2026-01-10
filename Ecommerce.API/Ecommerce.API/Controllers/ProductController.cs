@@ -1,13 +1,9 @@
-﻿using Ecommerce.API.Data;
-using Ecommerce.API.DTOs.Cloudinary;
-using Ecommerce.API.DTOs.Products;
-using Ecommerce.API.Entities;
+﻿using Ecommerce.API.DTOs.Products;
 using Ecommerce.API.Entities.Shops;
 using Ecommerce.API.Middleware;
 using Ecommerce.API.Services;
 using Ecommerce.API.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API.Controllers
 {
@@ -241,7 +237,7 @@ namespace Ecommerce.API.Controllers
 					});
 				}
 
-				if (!string.IsNullOrEmpty(id))
+				if (string.IsNullOrEmpty(id))
 				{
 					return BadRequest(new
 					{
@@ -293,7 +289,7 @@ namespace Ecommerce.API.Controllers
 		{
 			try
 			{
-				if (!string.IsNullOrEmpty(id))
+				if (string.IsNullOrEmpty(id))
 				{
 					return BadRequest(new
 					{
