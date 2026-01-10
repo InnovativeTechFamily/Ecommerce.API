@@ -34,5 +34,76 @@ namespace Ecommerce.API.Controllers
 				throw new ErrorHandler(ex.Message, 500);
 			}
 		}
+		[HttpGet("shop/{shopId}")]
+		public async Task<IActionResult> GetCouponsByShop(string shopId)
+		{
+			try
+			{
+				var coupons = await _couponService.GetByShopIdAsync(shopId);
+
+				return Ok(new
+				{
+					success = true,
+					count = coupons.Count,
+					data = coupons
+				});
+			}
+			catch (Exception ex)
+			{
+				throw new ErrorHandler(ex.Message, 500);
+			}
+		}
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteCoupon(string id)
+		{
+			try
+			{
+				var deleted = await _couponService.DeleteAsync(id);
+
+				if (!deleted)
+				{
+					throw new ErrorHandler("Coupon not found", 404);
+				}
+
+				return Ok(new
+				{
+					success = true,
+					message = "Coupon deleted successfully"
+				});
+			}
+			catch (Exception ex)
+			{
+				throw new ErrorHandler(ex.Message, 500);
+			}
+		}
+
+		[HttpGet("get-coupon-value/{name}")]
+		public async Task<IActionResult> GetCouponValue(string name)
+		{
+			try
+			{
+				var coupon = await _couponService.GetByNameAsync(name);
+
+				if (coupon == null)
+				{
+					throw new ErrorHandler("Coupon not found", 404);
+				}
+
+				return Ok(new
+				{
+					success = true,
+					value = coupon.Value,
+					minAmount = coupon.MinAmount,
+					maxAmount = coupon.MaxAmount
+				});
+			}
+			catch (Exception ex)
+			{
+				throw new ErrorHandler(ex.Message, 500);
+			}
+		}
+
+
 	}
 }
+	

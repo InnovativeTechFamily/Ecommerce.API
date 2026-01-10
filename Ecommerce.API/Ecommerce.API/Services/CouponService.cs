@@ -40,5 +40,37 @@ namespace Ecommerce.API.Services
 
 			return true;
 		}
+		public async Task<List<Coupon>> GetByShopIdAsync(string shopId)
+		{
+			var coupons = await _context.Coupons
+				.Where(x => x.ShopId == shopId)
+				.OrderByDescending(x => x.CreatedAt)
+				.ToListAsync();
+
+			return coupons;
+		}
+		public async Task<bool> DeleteAsync(string id)
+		{
+			// Find coupon
+			var coupon = await _context.Coupons.FirstOrDefaultAsync(x => x.Id == id);
+
+			if (coupon == null)
+				return false;
+
+			// Remove coupon
+			_context.Coupons.Remove(coupon);
+
+			// Save changes
+			await _context.SaveChangesAsync();
+
+			return true;
+		}
+
+		public async Task<Coupon?> GetByNameAsync(string name)
+		{
+			return await _context.Coupons
+				.FirstOrDefaultAsync(x => x.Name == name);
+		}
+
 	}
 }

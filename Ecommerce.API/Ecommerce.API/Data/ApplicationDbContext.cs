@@ -34,8 +34,7 @@ namespace Ecommerce.API.Data
 		public DbSet<Coupon> Coupons { get; set; }
 
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-        public DbSet<Category> Categories { get; set;}
+        //protected override void OnModelCreating(ModelBuilder modelBuilder);
         public DbSet<Conversation> Conversations { get; set; }
         // In ApplicationDbContext.cs
         public DbSet<Message> Messages { get; set; }
