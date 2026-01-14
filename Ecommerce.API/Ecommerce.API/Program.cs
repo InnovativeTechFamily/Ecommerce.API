@@ -28,42 +28,6 @@ builder.Services.Configure<CloudinarySettings>(
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-//builder.Services.AddOpenApi();
-
-//// Add Authentication
-//// later we see
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-//.AddJwtBearer(options =>
-//{
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuerSigningKey = true,
-//        IssuerSigningKey = new SymmetricSecurityKey(
-//            Encoding.ASCII.GetBytes(builder.Configuration["Jwt:SecretKey"])),
-//        ValidateIssuer = false,
-//        ValidateAudience = false,
-//        ClockSkew = TimeSpan.Zero
-//    };
-
-//    options.Events = new JwtBearerEvents
-//    {
-//        OnMessageReceived = context =>
-//        {
-//            // Allow token from cookies
-//            context.Token = context.Request.Cookies["token"];
-//            return Task.CompletedTask;
-//        }
-//    };
-//});
-
-//builder.Services.AddScoped<IAuthService, AuthService>();
-//builder.Services.AddScoped<IProductService, ProductService>();
-//builder.Services.AddScoped<IEmailService, EmailService>(); // Implement IEmailService
 
 
 // Add Authorization
@@ -86,13 +50,7 @@ builder.Services.AddScoped<IMessagesService, MessagesService>();
 // Add CORS
 builder.Services.AddCors(options =>
 {
-    //options.AddPolicy("AllowAll",
-    //    builder =>
-    //    {
-    //        builder.AllowAnyOrigin()
-    //               .AllowAnyMethod()
-    //               .AllowAnyHeader();
-    //    });
+   
     options.AddPolicy("AllowFrontend",
        policy =>
        {
@@ -119,8 +77,17 @@ if (app.Environment.IsDevelopment())
    // app.MapOpenApi();
 
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        // Configure the default expansion level:
+        c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapses all operations and tags
+                                                                            // Or use:
+                                                                            // c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List); // Expands only the tags, collapses operations
+                                                                            // c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.Full); // Expands everything
+    });
 }
+
 
 app.UseHttpsRedirection();
 
