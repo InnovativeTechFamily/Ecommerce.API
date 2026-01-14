@@ -1,30 +1,26 @@
-name: Commit Message Lint
+name: Commit message lint
 
 on:
+  push:
+    branches:
+      - dev
+      - main
   pull_request:
-    branches: [ main, dev ]
+    branches:
+      - dev
+      - main
 
 jobs:
   commitlint:
+    name: Commit message lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Lint commit messages
-        run: |
-          regex='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([\w\-\.]+\))?(!)?: ([\w ])+([\s\S]*)'
-          for commit in $(git rev-list ${{ github.event.pull_request.base.ref }}..HEAD); do
-            msg=$(git log --format=%B -n 1 $commit)
-            if ! [[ "$msg" =~ $regex ]]; then
-              echo "❌ Invalid commit message:"
-              echo "$msg"
-              echo ""
-              echo "Commit messages must follow the conventional commits format:"
-              echo "type(scope?): description"
-              echo ""
-              echo "Allowed types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test"
-              exit 1
-            fi
-          done
+      - name: Run commitlint
+        uses: wagoid/commitlint-action@v6
+        with:
+          configFile: .commitlintrc.yml
