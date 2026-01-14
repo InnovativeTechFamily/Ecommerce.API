@@ -1,4 +1,4 @@
-name: Commit message lint
+name: Commit message lint (no external action)
 
 on:
   push:
@@ -12,15 +12,78 @@ on:
 
 jobs:
   commitlint:
-    name: Commit message lint
+    name: Lint commit messages
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout (full history)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Run commitlint
-        uses: wagoid/commitlint-action@v6
-        with:
-          configFile: .commitlintrc.yml
+      - name: Validate commit messages
+        run: |
+          set -euo pipefail
+
+          # Allowed types (your list)
+          pattern='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\([^)]+\))?: .+'
+
+          get_commit_subjects() {
+            # $1 = range or single ref
+            git log --pretty=format:%s "$1"
+          }
+
+          # Determine range depending on event
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base_ref="${{ github.event.pull_request.base.ref }}"
+            echo "Event: pull_request; base ref: $base_ref"
+            # fetch base ref to compare
+            git fetch origin "$base_ref":"refs/remotes/origin/$base_ref" --depth=1 || true
+            range="origin/$base_ref..HEAD"
+          else
+            before="${{ github.event.before }}"
+            after="${{ github.sha }}"
+            echo "Event: push; before: $before after: $after"
+            if [ "$before" = "0000000000000000000000000000000000000000" ]; then
+              # new branch: check all commits reachable from after
+              range="$after"
+            else
+              range="$before..$after"
+            fi
+          fi
+
+          echo "Checking commits in range: $range"
+
+          # Collect commit subjects
+          commits="$(get_commit_subjects "$range" || true)"
+
+          if [ -z "$commits" ]; then
+            echo "No commits found in range — nothing to check."
+            exit 0
+          fi
+
+          failures=0
+          IFS=$'\n'
+          for subject in $commits; do
+            # Trim leading/trailing whitespace
+            subject="$(echo "$subject" | sed -E 's/^[[:space:]]+|[[:space:]]+$//g')"
+            if [ -z "$subject" ]; then
+              # skip empty lines
+              continue
+            fi
+            if ! echo "$subject" | grep -Eq "$pattern"; then
+              echo "::error::Invalid commit subject: '$subject'"
+              failures=1
+            else
+              echo "OK: $subject"
+            fi
+          done
+
+          if [ "$failures" -ne 0 ]; then
+            echo "One or more commit messages do not follow the allowed types."
+            echo ""
+            echo "Allowed types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert"
+            echo "Format: <type>(optional-scope): <subject>"
+            exit 1
+          fi
+
+          echo "All commit messages conform to the required format."
