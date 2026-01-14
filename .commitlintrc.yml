@@ -1,0 +1,34 @@
+# commitlint configuration: enforce allowed commit types and non-empty subject
+extends:
+  - '@commitlint/config-conventional'
+
+rules:
+  # Allowed types (matches the list you provided)
+  type-enum:
+    - 2
+    - [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "chore",
+        "ci",
+        "build",
+        "revert"
+      ]
+
+  # Disallow empty type and subject
+  type-empty:
+    - 2
+    - never
+  subject-empty:
+    - 2
+    - never
+
+  # Optional: limit header length
+  header-max-length:
+    - 2
+    - 100
