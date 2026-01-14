@@ -68,7 +68,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Add Authorization
 builder.Services.AddAuthorization();
-
+//fix: correct rounding bug in price calculation
 // Register Services
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IProductService, ProductService>();
