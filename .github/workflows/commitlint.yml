@@ -2,7 +2,7 @@ name: Commit Message Lint
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 jobs:
   commitlint:
@@ -15,11 +15,16 @@ jobs:
       - name: Lint commit messages
         run: |
           regex='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([\w\-\.]+\))?(!)?: ([\w ])+([\s\S]*)'
-          for commit in $(git rev-list origin/main..HEAD); do
+          for commit in $(git rev-list ${{ github.event.pull_request.base.ref }}..HEAD); do
             msg=$(git log --format=%B -n 1 $commit)
             if ! [[ "$msg" =~ $regex ]]; then
               echo "❌ Invalid commit message:"
               echo "$msg"
+              echo ""
+              echo "Commit messages must follow the conventional commits format:"
+              echo "type(scope?): description"
+              echo ""
+              echo "Allowed types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test"
               exit 1
             fi
           done
