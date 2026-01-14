@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 [ApiController]
 [Route("api/[controller]")]
 public class ConversationController : ControllerBase
-{//tettttttttddci: add commitlint workflow and config Current runner version: '2.330.0'
+{//tettttttttddci: add commitlint workflow and cci: add commitlint workflow and configonfig Current runner version: '2.330.0'
     Runner Image Provisioner
     Operating System
     Runner Image
