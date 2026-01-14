@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout (full history)
-        uses: commitlint/github-action@v19
+        uses: wagoid/commitlint-github-action@v6
         with:
           fetch-depth: 0
 
