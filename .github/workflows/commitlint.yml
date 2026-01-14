@@ -1,0 +1,25 @@
+name: Commit Message Lint
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Lint commit messages
+        run: |
+          regex='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([\w\-\.]+\))?(!)?: ([\w ])+([\s\S]*)'
+          for commit in $(git rev-list origin/main..HEAD); do
+            msg=$(git log --format=%B -n 1 $commit)
+            if ! [[ "$msg" =~ $regex ]]; then
+              echo "❌ Invalid commit message:"
+              echo "$msg"
+              exit 1
+            fi
+          done
