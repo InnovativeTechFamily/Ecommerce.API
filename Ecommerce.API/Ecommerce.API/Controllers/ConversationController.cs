@@ -7,7 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 [ApiController]
 [Route("api/[controller]")]
 public class ConversationController : ControllerBase
-{//tettttttttddci: add commitlint workflow and config
+{//tettttttttddci: add commitlint workflow and config Current runner version: '2.330.0'
+    Runner Image Provisioner
+    Operating System
+    Runner Image
+    GITHUB_TOKEN Permissions
+    Secret source: Actions
+    Prepare workflow directory
+Prepare all required actions
+Getting action download info
+Error: Unable to resolve action wagoid/commitlint-action, repository not found
     private readonly IConversationService _conversationService;
 
     public ConversationController(IConversationService conversationService)
