@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 [ApiController]
 [Route("api/[controller]")]
 public class ConversationController : ControllerBase
-{//tettttttttdd
+{//tettttttttddci: add commitlint workflow and config
     private readonly IConversationService _conversationService;
 
     public ConversationController(IConversationService conversationService)
