@@ -3,6 +3,8 @@ using Ecommerce.API.DTOs;
 using Ecommerce.API.DTOs.Cloudinary;
 using Ecommerce.API.Middleware;
 using Ecommerce.API.Services;
+using Ecommerce.API.Services.Conversations;
+using Ecommerce.API.Services.Messages;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -74,8 +76,12 @@ builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IMediaService, MediaService>();
 builder.Services.AddScoped<IOrderEmailService, OrderEmailService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IConversationService, ConversationService>();
+builder.Services.AddScoped<IMessagesService, MessagesService>();
 
 // Add CORS
 builder.Services.AddCors(options =>

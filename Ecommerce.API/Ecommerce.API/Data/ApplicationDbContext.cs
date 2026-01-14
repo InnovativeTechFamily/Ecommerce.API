@@ -1,7 +1,10 @@
 ﻿
 using Ecommerce.API.Data.Configurations;
 using Ecommerce.API.Entities;
+using Ecommerce.API.Entities.Coupons;
+using Ecommerce.API.Entities.Chats;
 using Ecommerce.API.Entities.Orders;
+using Ecommerce.API.Entities.Event;
 using Ecommerce.API.Entities.Products;
 using Ecommerce.API.Entities.Shops;
 using Ecommerce.API.Entities.Users;
@@ -23,11 +26,18 @@ namespace Ecommerce.API.Data
 		public DbSet<Product> Products { get; set; }
         public DbSet<Shop> Shops { get; set; }           // Add Shops
         public DbSet<ShopTransaction> ShopTransactions { get; set; }  // Add Transactions
+        public DbSet<Event> Events { get; set; }
 
         public DbSet<Media> Media { get; set; }
         public DbSet<Order> Orders { get; set; }
-
         public DbSet<Category> Categories { get; set;}
+		public DbSet<Coupon> Coupons { get; set; }
+
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder);
+        public DbSet<Conversation> Conversations { get; set; }
+        // In ApplicationDbContext.cs
+        public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -114,6 +124,39 @@ namespace Ecommerce.API.Data
 				  .HasDefaultValueSql("GETUTCDATE()");
 			});
 
+            // EVENT configuration
+            modelBuilder.Entity<Event>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Name)
+                      .IsRequired()
+                      .HasMaxLength(200);
+
+                entity.Property(e => e.Description)
+                      .IsRequired();
+
+                entity.Property(e => e.Category)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.Status)
+                      .HasDefaultValue("Running");
+
+                entity.Property(e => e.OriginalPrice)
+                      .HasPrecision(18, 2);
+
+                entity.Property(e => e.DiscountPrice)
+                      .HasPrecision(18, 2);
+
+                entity.Property(e => e.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.HasIndex(e => e.Category);
+                entity.HasIndex(e => e.ShopId);
+                entity.HasIndex(e => e.Status);
+            });
+
             // other entity configurations...
 
             modelBuilder.ApplyConfiguration(new MediaConfiguration());
@@ -141,6 +184,35 @@ namespace Ecommerce.API.Data
             modelBuilder.Entity<OrderItem>(entity =>
             {
                 entity.HasKey(oi => oi.Id);
+            });
+
+
+            //Conversation
+            modelBuilder.Entity<Conversation>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+                entity.Property(c => c.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(c => c.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+                // Index for fast group title lookup
+                entity.HasIndex(c => c.GroupTitle);
+
+                // Index for member lookups
+                entity.HasIndex(c => c.Members);
+            });
+
+            //Message
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.HasKey(m => m.Id);
+                entity.Property(m => m.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(m => m.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+                // Index for fast conversation lookups
+                entity.HasIndex(m => m.ConversationId);
+
+                // Owned image (embedded)
+                entity.OwnsOne(m => m.Images);
             });
 
         }

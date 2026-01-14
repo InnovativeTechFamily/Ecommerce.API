@@ -660,7 +660,7 @@ namespace Ecommerce.API.Controllers
             }
         }
         [HttpGet("user-info/{id}")]
-        public async Task<IActionResult> GetUserInfo(Guid id)
+        public async Task<IActionResult> GetUserInfo(int id)
         {
             try
             {
@@ -710,7 +710,7 @@ namespace Ecommerce.API.Controllers
         [HttpDelete("delete-user/{id}")]
         [IsAuthenticated]  // your existing attribute
         [IsAdmin("Admin")]  // existing attribute
-        public async Task<IActionResult> DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
             try
             {
