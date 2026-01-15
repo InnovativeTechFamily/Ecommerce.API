@@ -1,5 +1,5 @@
 import axios from "axios";
-import { server } from "../../server";
+import { server,getAllEventsEndpoint } from "../../server";
 
 
 // create event
@@ -72,7 +72,7 @@ export const getAllEvents = () => async (dispatch) => {
       type: 'getAlleventsRequest',
     });
 
-    const { data } = await axios.get(`${server}/event/get-all-events`);
+    const { data } = await axios.get(`${getAllEventsEndpoint}`);
     dispatch({
       type: 'getAlleventsSuccess',
       payload: data.events,

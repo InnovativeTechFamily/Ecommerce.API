@@ -33,7 +33,7 @@ const Events = () => {
             {allEvents.length !== 0 ? (
               <Slider {...sliderSettings}>
                 {allEvents?.map((event) => (
-                  <EventCardSlider key={event._id} data={event} />
+                  <EventCardSlider key={event.id} data={event} />
                 ))}
               </Slider>
             ) : (

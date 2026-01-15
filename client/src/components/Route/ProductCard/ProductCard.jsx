@@ -79,7 +79,7 @@ const ProductCard = ({ data,isEvent }) => {
           />
         </Link>
         <Link to="/">
-          <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
+          <h5 className={`${styles.shop_name}`}>{data.shop?.name}</h5>
         </Link>
         <Link to={`${isEvent === true ? `/product/${data.id}?isEvent=true` : `/product/${data.id}`}`}>
           <h4 className="pb-3 front-[500]">
