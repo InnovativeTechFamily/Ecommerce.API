@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getUser, server } from "../../server";
+import { getUser, server,shopDetailEnpoint } from "../../server";
 
 // load user
 export const loadUser = () => async (dispatch) => {
@@ -28,7 +28,7 @@ export const loadSeller = () => async (dispatch) => {
     dispatch({
       type: "LoadSellerRequest",
     });
-    const { data } = await axios.get(`${server}/shop/getSeller`, {
+    const { data } = await axios.get(`${shopDetailEnpoint}`, {
       withCredentials: true,
     });
     dispatch({

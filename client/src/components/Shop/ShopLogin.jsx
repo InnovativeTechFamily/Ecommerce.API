@@ -3,7 +3,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../../styles/styles";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { server } from "../../server";
+import { shopLoginEndpoint } from "../../server";
 import { toast } from "react-toastify";
 
 const ShopLogin = () => {
@@ -17,7 +17,7 @@ const ShopLogin = () => {
 
     await axios
       .post(
-        `${server}/shop/login-shop`,
+        `${shopLoginEndpoint}`,
         {
           email,
           password,

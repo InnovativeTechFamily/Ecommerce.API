@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { backend_url, server } from "../../server";
+import { backend_url, server,shopInfoEnpoint } from "../../server";
 import styles from "../../styles/styles";
 import Loader from "../Layout/Loader";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +19,7 @@ const ShopInfo = ({ isOwner }) => {
   useEffect(() => {
      dispatch(getAllProductsShop(id));
      setIsLoading(true);
-    axios.get(`${server}/shop/get-shop-info/${id}`).then((res) => {
+    axios.get(`${shopInfoEnpoint}/${id}`).then((res) => {
      setData(res.data.shop);
      setIsLoading(false);
     }).catch((error) => {
@@ -59,7 +59,7 @@ const ShopInfo = ({ isOwner }) => {
       <div className="w-full py-5">
         <div className="w-full flex item-center justify-center">
           <img
-            src={`${data.avatar?.url}`}
+            src={`${data.avatarUrl}`}
             alt=""
             className="w-[150px] h-[150px] object-cover rounded-full"
           />

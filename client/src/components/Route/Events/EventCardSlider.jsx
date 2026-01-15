@@ -11,7 +11,7 @@ const EventCardSlider = ({ data }) => {
   const dispatch = useDispatch();
 
   const addToCartHandler = (data) => {
-    const isItemExists = cart && cart.find((i) => i._id === data._id);
+    const isItemExists = cart && cart.find((i) => i.id === data.id);
     if (isItemExists) {
       toast.error("Item already in cart!");
     } else {
@@ -32,7 +32,7 @@ const EventCardSlider = ({ data }) => {
     >
       <div className="w-full lg:w-[50%] flex justify-center items-center" style={{ height: "300px" }}> {/* Adjust image container height */}
         <img
-          src={`${data.images[0]?.url}`}
+          src={`${data.media[0]?.url}`}
           alt=""
           style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "cover" }} // Fit the image properly
         />
@@ -56,7 +56,7 @@ const EventCardSlider = ({ data }) => {
         <CountDown data={data} />
         <br />
         <div className="flex items-center">
-          <Link to={`/product/${data._id}?isEvent=true`}>
+          <Link to={`/product/${data.id}?isEvent=true`}>
             <div className={`${styles.button} text-[#fff]`}>See Details</div>
           </Link>
           <div

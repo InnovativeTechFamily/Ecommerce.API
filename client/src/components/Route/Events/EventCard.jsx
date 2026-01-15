@@ -13,7 +13,7 @@ const EventCard = ({active,dataList }) => {
     const dispatch = useDispatch();
 
     const addToCartHandler = (data) => {
-      const isItemExists = cart && cart.find((i) => i._id === data._id);
+      const isItemExists = cart && cart.find((i) => i.id === data.id);
       if (isItemExists) {
         toast.error("Item already in cart!");
       } else {
@@ -26,18 +26,18 @@ const EventCard = ({active,dataList }) => {
         }
       }
     }
-    //console.log("dataList",dataList)
+    console.log("dataList",dataList)
   return (
     <div className="events-list">
       {dataList?.map((data) => (
         <div
-          key={data._id}
+          key={data.id}
           className={`w-full block bg-white rounded-lg ${
             active ? "unset" : "mb-12"
           } lg:flex p-2`}
         >
           <div className="w-full lg:-w[50%] m-auto flex justify-center items-center">
-            <img src={`${data.images[0]?.url}`} alt={data.name} />
+            <img src={`${data.media[0]?.url}`} alt={data.name} />
           </div>
           <div className="w-full lg:[w-50%] flex flex-col justify-center">
             <h2 className={`${styles.productTitle}`}>{data.name}</h2>
@@ -58,7 +58,7 @@ const EventCard = ({active,dataList }) => {
             <CountDown data={data} />
             <br />
             <div className="flex items-center">
-              <Link to={`/product/${data._id}?isEvent=true`}>
+              <Link to={`/product/${data.id}?isEvent=true`}>
                 <div className={`${styles.button} text-[#fff]`}>See Details</div>
               </Link>
               <div
