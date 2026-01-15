@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { backend_url, server } from "../../server";
+import { backend_url, server,updateShopAvatarEnpoint,updateShopInfoEnpoint } from "../../server";
 import { AiOutlineCamera } from "react-icons/ai";
 import styles from "../../styles/styles";
 import axios from "axios";
@@ -28,7 +28,7 @@ const ShopSettings = () => {
         setAvatar(reader.result);
         axios
           .put(
-            `${server}/shop/update-shop-avatar`,
+            `${updateShopAvatarEnpoint}`,
             { avatar: reader.result },
             {
               withCredentials: true,
@@ -52,7 +52,7 @@ const ShopSettings = () => {
 
     await axios
       .put(
-        `${server}/shop/update-seller-info`,
+        `${updateShopInfoEnpoint}`,
         {
           name,
           address,
@@ -77,7 +77,7 @@ const ShopSettings = () => {
         <div className="w-full flex items-center justify-center">
           <div className="relative">
             <img
-               src={avatar ? avatar : `${seller.avatar?.url}`}
+               src={avatar ? avatar : `${seller.avatarUrl}`}
               alt=""
               className="w-[200px] h-[200px] rounded-full cursor-pointer"
             />
@@ -163,7 +163,7 @@ const ShopSettings = () => {
               <label className="block pb-2">Shop Zip Code</label>
             </div>
             <input
-              type="number"
+             type="name"
               placeholder={seller?.zipCode}
               value={zipCode}
               onChange={(e) => setZipcode(e.target.value)}

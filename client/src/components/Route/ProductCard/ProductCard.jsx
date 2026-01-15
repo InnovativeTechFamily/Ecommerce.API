@@ -31,7 +31,7 @@ const ProductCard = ({ data,isEvent }) => {
   // const d = data.name;
   // const product_name = d.replace(/\s+/g, "-");
   useEffect(() => {
-    if (wishlist && wishlist.find((i) => i._id === data._id)) {
+    if (wishlist && wishlist.find((i) => i.id === data.id)) {
       setClick(true);
     } else {
       setClick(false);
@@ -49,7 +49,7 @@ const ProductCard = ({ data,isEvent }) => {
   };
 //addCart
   const addToCartHandler = (id) => {
-    const isItemExists = cart && cart.find((i) => i._id === id);
+    const isItemExists = cart && cart.find((i) => i.id === id);
     if (isItemExists) {
       toast.error("Item already in cart!");
     } else {
@@ -71,7 +71,7 @@ const ProductCard = ({ data,isEvent }) => {
     >
       
         <div className="flex justify-end"></div>
-        <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
+        <Link to={`${isEvent === true ? `/product/${data.id}?isEvent=true` : `/product/${data.id}`}`}>
           <img
              src={`${data.images && data.images[0]?.url}`}
             alt=""
@@ -81,7 +81,7 @@ const ProductCard = ({ data,isEvent }) => {
         <Link to="/">
           <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
         </Link>
-        <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
+        <Link to={`${isEvent === true ? `/product/${data.id}?isEvent=true` : `/product/${data.id}`}`}>
           <h4 className="pb-3 front-[500]">
             {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
           </h4>
@@ -136,7 +136,7 @@ const ProductCard = ({ data,isEvent }) => {
           <AiOutlineShoppingCart
             size={25}
             className="cursor-pointer absolute right-2 top-24"
-             onClick={() => addToCartHandler(data._id)}
+             onClick={() => addToCartHandler(data.id)}
             color="#444"
             title="Add to cart"
           />

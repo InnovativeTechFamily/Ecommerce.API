@@ -7,7 +7,7 @@ import Loader from "../components/Layout/Loader";
 import ProductCard from "../components/Route/ProductCard/ProductCard";
 import styles from "../styles/styles";
 //import { getAllProducts } from "../reducx/actions/product";
-import { pageSize ,server} from "../server";
+import { pageSize ,server,getAllProductsEndpoint} from "../server";
 import axios from "axios";
 
 const ProductsPage = () => {
@@ -27,7 +27,7 @@ const ProductsPage = () => {
     setislodingg(true);
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`${server}/product/get-all-products?page=${currentPage}&limit=${productsPerPage}`);
+        const { data } = await axios.get(`${getAllProductsEndpoint}?page=${currentPage}&limit=${productsPerPage}`);
         //// current senario we get direct to the endpoint not dispatch
         // const data = await dispatch(
         //   getAllProducts(currentPage, productsPerPage)

@@ -22,6 +22,30 @@ export const getUser =dotnetserver+"/api/Users/getUser";
 export const activation =dotnetserver+"/api/Users/activation";
 export const uploadAvatar =dotnetserver+"/api/Users/upload-avatar";
 export const logout =dotnetserver+"/api/Users/logout";
+//shop
+export const shopCreateEndpoint =dotnetserver+"/api/Shop/create-shop";
+export const shopActivationEndpoint =dotnetserver+"/api/Shop/activation";
+export const shopLoginEndpoint =dotnetserver+"/api/Shop/login-shop";
+export const shopDetailEnpoint =dotnetserver+"/api/Shop/getSeller";
+export const shopInfoEnpoint =dotnetserver+"/api/Shop/get-shop-info";
+export const updateShopAvatarEnpoint =dotnetserver+"/api/Shop/update-shop-avatar";
+export const updateShopInfoEnpoint =dotnetserver+"/api/Shop/update-seller-info";
+//Order
+
+export const getAllOrdersEndpoint=dotnetserver+"/api/Orders/get-seller-all-orders";
+export const createOrdersEndpoint=dotnetserver+"/api/Orders/create-order";
+export const getAllOrdersForUserEndpoint=dotnetserver+"/api/Orders/get-all-orders";
+export const getAdminAllOrdersEndpoint=dotnetserver+"/api/Orders/admin-all-orders";
+export const updateOrderStatusEndpoint=dotnetserver+"/api/Orders/update-order-status/{id}";
+export const updateOrderRefundEndpoint=dotnetserver+"/api/Orders/order-refund/{id}";
+export const updateOrderRefundSuccessEndpoint=dotnetserver+"/api/Orders/order-refund-success/{id}";
+
+//product
+export const getAllProductsEndpoint=dotnetserver+"/api/Products/GetAllProduct";
+
+
+
+
 
 
 // const path = require("path");

@@ -1,6 +1,5 @@
 import axios from "axios";
-import { server } from "../../server";
-
+import { server, getAllProductsEndpoint } from "../../server";
 
 // create product
 export const createProduct =
@@ -31,7 +30,7 @@ export const createProduct =
         discountPrice,
         stock,
         shopId,
-        images,
+        images
       );
       dispatch({
         type: "productCreateSuccess",
@@ -45,54 +44,54 @@ export const createProduct =
     }
   };
 
-  // update product
+// update product
 export const updateProduct =
-(
-  id,
-  name,
-  description,
-  category,
-  tags,
-  originalPrice,
-  discountPrice,
-  stock,
-  status,
-  shopId,
-  images,
-  isPublished,
-) =>
-async (dispatch) => {
-  try {
-    dispatch({
-      type: "productUpdateRequest",
-    });
+  (
+    id,
+    name,
+    description,
+    category,
+    tags,
+    originalPrice,
+    discountPrice,
+    stock,
+    status,
+    shopId,
+    images,
+    isPublished
+  ) =>
+  async (dispatch) => {
+    try {
+      dispatch({
+        type: "productUpdateRequest",
+      });
 
-    const { data } = await axios.post(
-      `${server}/product/update-product`,
-      id,
-      name,
-      description,
-      category,
-      tags,
-      originalPrice,
-      discountPrice,
-      stock,
-      status,
-      shopId,
-      images,
-      isPublished,
-    );
-    dispatch({
-      type: "productUpdateSuccess",
-      payload: data.product,
-    });
-  } catch (error) {
-    dispatch({
-      type: "productUpdateFail",
-      payload: error.response.data.message,
-    });
-  }
-};
+      const { data } = await axios.post(
+        `${server}/product/update-product`,
+        id,
+        name,
+        description,
+        category,
+        tags,
+        originalPrice,
+        discountPrice,
+        stock,
+        status,
+        shopId,
+        images,
+        isPublished
+      );
+      dispatch({
+        type: "productUpdateSuccess",
+        payload: data.product,
+      });
+    } catch (error) {
+      dispatch({
+        type: "productUpdateFail",
+        payload: error.response.data.message,
+      });
+    }
+  };
 
 // get All Products of a shop
 export const getAllProductsShop = (id) => async (dispatch) => {
@@ -143,26 +142,26 @@ export const deleteProduct = (id) => async (dispatch) => {
 };
 
 // get all products with pagination
-export const getAllProducts = (page = 1, limit = 10) => async (dispatch) => {
-  try {
-    dispatch({
-      type: "getAllProductsRequest",
-    });
+export const getAllProducts =
+  (page = 1, limit = 10) =>
+  async (dispatch) => {
+    try {
+      dispatch({
+        type: "getAllProductsRequest",
+      });
 
-    const { data } = await axios.get(`${server}/product/get-all-products?page=${page}&limit=${limit}`);
-    dispatch({
-      type: "getAllProductsSuccess",
-      payload: data.products,
-    });
-    return data; // Return the fetched products
-  } catch (error) {
-    dispatch({
-      type: "getAllProductsFailed",
-      payload: error.response.data.message,
-    });
-  }
-};
-
-
-
-
+      const { data } = await axios.get(
+        `${getAllProductsEndpoint}?page=${page}&limit=${limit}`
+      );
+      dispatch({
+        type: "getAllProductsSuccess",
+        payload: data.products,
+      });
+      return data; // Return the fetched products
+    } catch (error) {
+      dispatch({
+        type: "getAllProductsFailed",
+        payload: error.response.data.message,
+      });
+    }
+  };
