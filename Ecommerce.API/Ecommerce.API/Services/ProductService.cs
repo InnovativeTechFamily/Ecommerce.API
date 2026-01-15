@@ -62,6 +62,8 @@ namespace Ecommerce.API.Services
 			};
 		}
 
+
+
 		public async Task<List<ProductResponseDto>> GetAllProductsAsync()
 		{
 			var products = await _context.Products
@@ -113,7 +115,7 @@ namespace Ecommerce.API.Services
 			// Always update discount price if provided (it's required in DTO)
 			product.DiscountPrice = updateProductDto.DiscountPrice;
 
-			if (updateProductDto.Stock >= 0) // Assuming stock can't be negative
+			if (updateProductDto.Stock > 0) // Assuming stock can't be negative
 				product.Stock = updateProductDto.Stock;
 
 			//if (updateProductDto.ShopId)
@@ -166,6 +168,30 @@ namespace Ecommerce.API.Services
 
 			await _context.SaveChangesAsync();
 			return true;
+		}
+
+		public async Task<List<ProductResponseDto>> GetProductByShopAsync(Guid sellerId)
+		{
+
+			var products = await _context.Products
+				.OrderByDescending(p => p.CreatedAt) // Latest first
+				.Select(p => new ProductResponseDto
+				{
+					Id = p.Id,
+					Name = p.Name,
+					Description = p.Description,
+					Category = p.Category,
+					Tags = p.Tags,
+					OriginalPrice = p.OriginalPrice,
+					DiscountPrice = p.DiscountPrice,
+					Stock = p.Stock,
+					ShopId = p.ShopId,
+					Status = (int)p.Status,
+					CreatedAt = p.CreatedAt
+				})
+				.ToListAsync();
+
+			return products;
 		}
 	}
 }

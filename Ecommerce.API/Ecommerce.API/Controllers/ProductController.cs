@@ -325,5 +325,21 @@ namespace Ecommerce.API.Controllers
 				});
 			}
 		}
+
+		[HttpGet("admin/all-products")]
+		[IsAuthenticated]
+		[IsAdmin("Admin")]
+		public async Task<IActionResult> GetAllProductsForAdmin()
+		{
+			var products = await _productService.GetAllProductsAsync();
+
+			return Ok(new
+			{
+				success = true,
+				total = products.Count,
+				products
+			});
+		}
+
 	}
 }	
