@@ -6,6 +6,7 @@ namespace Ecommerce.API.Entities.Shops
     public class ShopTransaction
     {
         public int Id { get; set; }          // PK for EF
+        public string WithdrawId { get; set; } = default!; // FK to Withdraw
         public Guid ShopId { get; set; }     // FK to Shop
         public Shop Shop { get; set; } = default!;
 
