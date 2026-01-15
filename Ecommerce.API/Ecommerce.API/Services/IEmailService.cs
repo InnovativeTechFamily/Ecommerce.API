@@ -4,5 +4,6 @@
     {
         Task SendEmailAsync(string email, string subject, string message);
         Task SendWithdrawRequestEmailAsync(string email, string sellerName, decimal amount);
+        Task SendWithdrawConfirmationEmailAsync(string email, string sellerName, decimal amount); // NEW
     }
 }

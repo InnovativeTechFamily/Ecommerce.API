@@ -76,5 +76,24 @@ namespace Ecommerce.API.Services
             await smtp.SendAsync(mailMessage);
             await smtp.DisconnectAsync(true);
         }
+        public async Task SendWithdrawConfirmationEmailAsync(string email, string sellerName, decimal amount)
+        {
+            var subject = "Payment confirmation";
+            var message = $"Hello {sellerName}, Your withdraw request of ${amount} is on the way. Delivery time depends on your bank's rules it usually takes 3days to 7days.";
+
+            var mailMessage = new MimeMessage();
+            mailMessage.From.Add(MailboxAddress.Parse(_config["Smtp:Mail"]));
+            mailMessage.To.Add(MailboxAddress.Parse(email));
+            mailMessage.Subject = subject;
+            mailMessage.Body = new TextPart(TextFormat.Plain) { Text = message };
+
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync(_config["Smtp:Host"], int.Parse(_config["Smtp:Port"]!), SecureSocketOptions.SslOnConnect);
+            await smtp.AuthenticateAsync(_config["Smtp:Mail"], _config["Smtp:Password"]);
+            await smtp.SendAsync(mailMessage);
+            await smtp.DisconnectAsync(true);
+        }
+
+
     }
 }

@@ -64,5 +64,29 @@ namespace Ecommerce.API.Controllers
                 throw new ErrorHandler(ex.Message, 500);
             }
         }
+
+        [HttpPut("update-withdraw-request/{id}")]
+        [IsAuthenticated]
+        [IsAdmin("Admin")]
+        public async Task<IActionResult> UpdateWithdrawRequest(string id, [FromBody] UpdateWithdrawRequestDto dto)
+        {
+            try
+            {
+                var withdraw = await _withdrawService.UpdateWithdrawRequestAsync(id, dto.SellerId);
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    withdraw
+                });
+            }
+            catch (ErrorHandler)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
     }
 }

@@ -80,13 +80,14 @@ namespace Ecommerce.API.Services
             withdraw.UpdatedAt = DateTime.UtcNow;
 
             // Load seller and add transaction
-            var seller = await _db.Shops.FindAsync(sellerId);
+            var shopId = Guid.Parse(sellerId);
+            var seller = await _db.Shops.FindAsync(shopId);
             if (seller == null)
                 throw new ErrorHandler("Seller not found", 404);
 
-            var transaction = new SellerTransaction
+            var transaction = new ShopTransaction
             {
-                Id = withdraw.Id,
+                WithdrawId = withdraw.Id,
                 Amount = withdraw.Amount,
                 UpdatedAt = withdraw.UpdatedAt.Value,
                 Status = withdraw.Status
