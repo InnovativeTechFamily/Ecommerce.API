@@ -5,11 +5,7 @@ using Ecommerce.API.Middleware;
 using Ecommerce.API.Services;
 using Ecommerce.API.Services.Conversations;
 using Ecommerce.API.Services.Messages;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
