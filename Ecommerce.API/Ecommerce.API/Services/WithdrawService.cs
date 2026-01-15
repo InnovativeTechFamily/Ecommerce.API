@@ -1,6 +1,7 @@
 ﻿using Ecommerce.API.Data;
 using Ecommerce.API.Entities.Shops;
 using Ecommerce.API.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API.Services
 {
@@ -62,5 +63,57 @@ namespace Ecommerce.API.Services
 
             return withdraw;
         }
+        public async Task<IReadOnlyList<Withdraw>> GetAllWithdrawRequestsAsync()
+        {
+            return await _db.Withdraws
+                .OrderByDescending(w => w.CreatedAt)
+                .ToListAsync();
+        }
+        public async Task<Withdraw> UpdateWithdrawRequestAsync(string withdrawId, string sellerId)
+        {
+            var withdraw = await _db.Withdraws.FindAsync(withdrawId);
+            if (withdraw == null)
+                throw new ErrorHandler("Withdraw request not found", 404);
+
+            // Update withdraw status and timestamp
+            withdraw.Status = "succeed";
+            withdraw.UpdatedAt = DateTime.UtcNow;
+
+            // Load seller and add transaction
+            var seller = await _db.Shops.FindAsync(sellerId);
+            if (seller == null)
+                throw new ErrorHandler("Seller not found", 404);
+
+            var transaction = new SellerTransaction
+            {
+                Id = withdraw.Id,
+                Amount = withdraw.Amount,
+                UpdatedAt = withdraw.UpdatedAt.Value,
+                Status = withdraw.Status
+            };
+
+            seller.Transactions.Add(transaction);
+            _db.Shops.Update(seller);
+
+            // Send confirmation email
+            try
+            {
+                await _emailService.SendWithdrawConfirmationEmailAsync(
+                    seller.Email,
+                    seller.Name,
+                    withdraw.Amount
+                );
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler($"Email failed: {ex.Message}", 500);
+            }
+
+            await _db.SaveChangesAsync();
+
+            return withdraw;
+        }
+
+
     }
 }

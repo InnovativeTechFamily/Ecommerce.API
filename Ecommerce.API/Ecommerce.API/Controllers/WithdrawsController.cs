@@ -45,5 +45,24 @@ namespace Ecommerce.API.Controllers
                 throw new ErrorHandler(ex.Message, 500);
             }
         }
+        [HttpGet("get-all-withdraw-request")]
+        [IsAuthenticated]
+        [IsAdmin("Admin")]
+        public async Task<IActionResult> GetAllWithdrawRequests()
+        {
+            try
+            {
+                var withdraws = await _withdrawService.GetAllWithdrawRequestsAsync();
+                return StatusCode(StatusCodes.Status201Created, new
+                {
+                    success = true,
+                    withdraws
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorHandler(ex.Message, 500);
+            }
+        }
     }
 }
