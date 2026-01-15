@@ -80,7 +80,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-        // Configure the default expansion level:
+        // Configure the default expansion level :
         c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapses all operations and tags
                                                                             // Or use:
                                                                             // c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List); // Expands only the tags, collapses operations
