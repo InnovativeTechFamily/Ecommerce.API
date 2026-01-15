@@ -1,19 +1,23 @@
 ﻿using Ecommerce.API.DTOs;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using MimeKit.Text;
 
 namespace Ecommerce.API.Services
 {
     public class EmailService : IEmailService
     {
+        private readonly IConfiguration _config;
         private readonly EmailSettings _settings;
         private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IOptions<EmailSettings> options, ILogger<EmailService> logger)
+        public EmailService(IOptions<EmailSettings> options, ILogger<EmailService> logger, IConfiguration config)
         {
             _settings = options.Value ?? throw new ArgumentNullException(nameof(options));
             _logger = logger;
+            _config = config;
         }
 
         public async Task SendEmailAsync(string email, string subject, string message)
@@ -53,6 +57,24 @@ namespace Ecommerce.API.Services
                 _logger.LogError(ex, "Failed to send email to {Email}", email);
                 throw; // let middleware handle / return 500 with logged details
             }
+        }
+
+        public async  Task SendWithdrawRequestEmailAsync(string email, string sellerName, decimal amount)
+        {
+            var subject = "Withdraw Request";
+            var message = $"Hello {sellerName}, Your withdraw request of ${amount} is processing. It will take 3days to 7days to processing!";
+
+            var mailMessage = new MimeMessage();
+            mailMessage.From.Add(MailboxAddress.Parse(_config["Smtp:Mail"]));
+            mailMessage.To.Add(MailboxAddress.Parse(email));
+            mailMessage.Subject = subject;
+            mailMessage.Body = new TextPart(TextFormat.Plain) { Text = message };
+
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync(_config["Smtp:Host"], int.Parse(_config["Smtp:Port"]!), SecureSocketOptions.SslOnConnect);
+            await smtp.AuthenticateAsync(_config["Smtp:Mail"], _config["Smtp:Password"]);
+            await smtp.SendAsync(mailMessage);
+            await smtp.DisconnectAsync(true);
         }
     }
 }
