@@ -167,5 +167,30 @@ namespace Ecommerce.API.Services
 			await _context.SaveChangesAsync();
 			return true;
 		}
+
+		public async Task<List<ProductResponseDto>> GetProductsByShopAsync(Guid shopId)
+		{
+			var products = await _context.Products
+				.Where(p => p.ShopId == shopId)
+				.OrderByDescending(p => p.CreatedAt)
+				.Select(p => new ProductResponseDto
+				{
+					Id = p.Id,
+					Name = p.Name,
+					Description = p.Description,
+					Category = p.Category,
+					Tags = p.Tags,
+					OriginalPrice = p.OriginalPrice,
+					DiscountPrice = p.DiscountPrice,
+					Stock = p.Stock,
+					ShopId = p.ShopId,
+					Status = (int)p.Status,
+					CreatedAt = p.CreatedAt
+				})
+				.ToListAsync();
+
+			return products;
+		}
+
 	}
 }

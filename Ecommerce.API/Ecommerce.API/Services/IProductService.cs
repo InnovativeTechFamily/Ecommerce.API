@@ -10,6 +10,6 @@ namespace Ecommerce.API.Services
 	    Task<List<ProductResponseDto>> GetAllProductsAsync();
 		Task<ProductResponseDto> UpdateProductAsync(string productId, CreateProductDto updateProductDto);
 		Task<bool> DeleteProductAsync(string productId);
-
+		Task<List<ProductResponseDto>> GetProductsByShopAsync(Guid shopId);
 	}
 }

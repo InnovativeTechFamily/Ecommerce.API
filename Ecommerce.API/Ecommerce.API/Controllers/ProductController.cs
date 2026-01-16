@@ -325,5 +325,17 @@ namespace Ecommerce.API.Controllers
 				});
 			}
 		}
+		// GET: api/products/get-all-products-shop/{id}
+		[HttpGet("get-all-products-shop/{id}")]
+		public async Task<IActionResult> GetAllProductsByShop(Guid id)
+		{
+			var products = await _productService.GetProductsByShopAsync(id);
+
+			return Ok(new
+			{
+				success = true,
+				products
+			});
+		}
 	}
 }	
