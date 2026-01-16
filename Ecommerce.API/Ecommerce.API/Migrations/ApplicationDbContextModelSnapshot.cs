@@ -548,11 +548,42 @@ namespace Ecommerce.API.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("WithdrawId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ShopId");
 
                     b.ToTable("ShopTransactions");
+                });
+
+            modelBuilder.Entity("Ecommerce.API.Entities.Shops.Withdraw", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Processing");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Withdraws");
                 });
 
             modelBuilder.Entity("Ecommerce.API.Entities.Users.Avatar", b =>
@@ -888,6 +919,36 @@ namespace Ecommerce.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Shop");
+                });
+
+            modelBuilder.Entity("Ecommerce.API.Entities.Shops.Withdraw", b =>
+                {
+                    b.OwnsOne("Ecommerce.API.Entities.Shops.WithdrawSeller", "Seller", b1 =>
+                        {
+                            b1.Property<string>("WithdrawId")
+                                .HasColumnType("nvarchar(450)");
+
+                            b1.Property<string>("Email")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Id")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("WithdrawId");
+
+                            b1.ToTable("Withdraws");
+
+                            b1.WithOwner()
+                                .HasForeignKey("WithdrawId");
+                        });
+
+                    b.Navigation("Seller")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Ecommerce.API.Entities.Users.Avatar", b =>

@@ -2,7 +2,7 @@
 {
     public class UpdatePaymentMethodDto
     {
-        public string WithdrawMethodJson { get; set; } = default!;
+        public object WithdrawMethodJson { get; set; } = default!;
         // JSON string like: '{"method": "paypal", "account": "seller@example.com"}'
     }
 

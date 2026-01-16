@@ -39,6 +39,7 @@ namespace Ecommerce.API.Data
 		public DbSet<Conversation> Conversations { get; set; }
         // In ApplicationDbContext.cs
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Withdraw> Withdraws { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -119,11 +120,11 @@ namespace Ecommerce.API.Data
 
                 entity.Property(p => p.DiscountPrice)
                     .HasPrecision(18, 2);
-				entity.Property(p => p.CreatedAt)
-	                  .HasDefaultValueSql("GETUTCDATE()");
-				entity.Property(p => p.UpdatedAt)
-				  .HasDefaultValueSql("GETUTCDATE()");
-			});
+                entity.Property(p => p.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(p => p.UpdatedAt)
+                  .HasDefaultValueSql("GETUTCDATE()");
+            });
 
             // EVENT configuration
             modelBuilder.Entity<Event>(entity =>
@@ -216,6 +217,18 @@ namespace Ecommerce.API.Data
                 entity.OwnsOne(m => m.Images);
             });
 
+            //Withdraw
+            modelBuilder.Entity<Withdraw>(entity =>
+            {
+                entity.HasKey(w => w.Id);
+                entity.Property(w => w.Status).HasDefaultValue("Processing");
+                entity.Property(w => w.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+                entity.OwnsOne(w => w.Seller);
+            });
+
+        }
+    }
 			// PRODUCT REVIEW configuration
 			modelBuilder.Entity<ProductReview>(entity =>
 			{

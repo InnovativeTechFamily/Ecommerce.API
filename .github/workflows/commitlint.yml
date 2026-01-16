@@ -1,0 +1,114 @@
+name: Commit message lint (no external action)
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+  pull_request:
+    branches:
+      - dev
+      - main
+
+jobs:
+  commitlint:
+    name: Lint commit messages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate commit messages
+        run: |
+          set -euo pipefail
+
+          # Allowed types
+          pattern='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\([^)]+\))?: .+'
+
+          get_commit_subjects() {
+            # $1 = range or single ref
+            git log --pretty=format:%s "$1"
+          }
+
+          echo "=== Debug: git info ==="
+          git --version
+          git remote -v || true
+          git show-ref --heads --tags || true
+          git branch -av || true
+          echo "======================="
+
+          # Determine range depending on event
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base_ref="${{ github.event.pull_request.base.ref }}"
+            base_sha="${{ github.event.pull_request.base.sha }}"
+            echo "Event: pull_request; base ref: $base_ref base sha: $base_sha"
+
+            # Try to fetch the base branch into refs/remotes/origin/<base_ref>
+            git fetch --no-tags origin "refs/heads/${base_ref}:refs/remotes/origin/${base_ref}" --depth=1 || true
+
+            # If fetch via name failed, try by base sha (if available)
+            if [ -n "$base_sha" ]; then
+              git fetch --no-tags origin "$base_sha" --depth=1 || true
+            fi
+
+            # Prefer origin/<base_ref> if available, else fall back to base sha if present
+            if git show-ref --verify --quiet "refs/remotes/origin/${base_ref}"; then
+              range="origin/${base_ref}..HEAD"
+            elif [ -n "$base_sha" ] && git rev-parse --verify --quiet "$base_sha" >/dev/null 2>&1; then
+              range="${base_sha}..HEAD"
+            else
+              # Last-resort: check just HEAD
+              echo "Warning: could not fetch base ref or base sha; falling back to HEAD only"
+              range="HEAD"
+            fi
+          else
+            before="${{ github.event.before }}"
+            after="${{ github.event.after || github.sha }}"
+            # Note: in push events `github.event.after` is available; fallback to github.sha if needed
+            echo "Event: push; before: $before after: $after"
+            if [ "$before" = "0000000000000000000000000000000000000000" ]; then
+              # new branch: check all commits reachable from after (or HEAD)
+              range="${after:-HEAD}"
+            else
+              range="$before..$after"
+            fi
+          fi
+
+          echo "Checking commits in range: $range"
+
+          # Collect commit subjects (remove any CRs to be safe)
+          commits="$(get_commit_subjects "$range" 2>/dev/null | sed 's/\r$//' || true)"
+
+          if [ -z "$commits" ]; then
+            echo "No commits found in range — nothing to check."
+            exit 0
+          fi
+
+          failures=0
+          IFS=$'\n'
+          for subject in $commits; do
+            # Trim leading/trailing whitespace
+            subject="$(echo "$subject" | sed -E 's/^[[:space:]]+|[[:space:]]+$//g')"
+            if [ -z "$subject" ]; then
+              # skip empty lines
+              continue
+            fi
+            if ! echo "$subject" | grep -E -q -- "$pattern"; then
+              echo "::error::Invalid commit subject: '$subject'"
+              failures=1
+            else
+              echo "OK: $subject"
+            fi
+          done
+
+          if [ "$failures" -ne 0 ]; then
+            echo "One or more commit messages do not follow the allowed types."
+            echo ""
+            echo "Allowed types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert"
+            echo "Format: <type>(optional-scope): <subject>"
+            exit 1
+          fi
+
+          echo "All commit messages conform to the required format."

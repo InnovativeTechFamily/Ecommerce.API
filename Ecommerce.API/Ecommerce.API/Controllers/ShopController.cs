@@ -14,6 +14,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace Ecommerce.API.Controllers
 {
@@ -447,7 +448,7 @@ namespace Ecommerce.API.Controllers
                 }
 
                 // Update withdrawMethod (like Shop.findByIdAndUpdate)
-                seller.WithdrawMethodJson = dto.WithdrawMethodJson;
+                seller.WithdrawMethodJson = JsonSerializer.Serialize(dto.WithdrawMethodJson);
 
                 // Save changes
                 _db.Shops.Update(seller);

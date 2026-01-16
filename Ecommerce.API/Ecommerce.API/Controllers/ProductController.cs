@@ -172,7 +172,7 @@ namespace Ecommerce.API.Controllers
 				}
 			}
 		[HttpGet("GetAllProduct")]
-       // [IsSeller]
+       
         public async Task<IActionResult> GetAllProducts()
 		{
 			try
@@ -203,8 +203,8 @@ namespace Ecommerce.API.Controllers
 				{
 					success = true,
 					message = "Products retrieved successfully",
-					data = products,
-					count = products.Count
+                    products = products,
+                    productCount = products.Count
 				});
 			}
 			catch (Exception ex)
