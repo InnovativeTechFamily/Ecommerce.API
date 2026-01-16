@@ -1,5 +1,6 @@
 ﻿using Ecommerce.API.DTOs.Products;
 using Ecommerce.API.Entities.Shops;
+using Ecommerce.API.Entities.Users;
 using Ecommerce.API.Middleware;
 using Ecommerce.API.Services;
 using Ecommerce.API.Utils;
@@ -283,47 +284,22 @@ namespace Ecommerce.API.Controllers
 			}
 		}
 
-		// DELETE: api/products/{id}
 		[HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(string id)
+		[IsSeller]
+		public async Task<IActionResult> DeleteProduct(string id)
 		{
-			try
-			{
-				if (string.IsNullOrEmpty(id))
-				{
-					return BadRequest(new
-					{
-						success = false,
-						message = "Invalid product ID"
-					});
-				}
+			var seller = HttpContext.Items["Seller"] as Shop;
 
-				var result = await _productService.DeleteProductAsync(id);
+			if (seller == null)
+				throw new ErrorHandler("Seller not found", 400);
 
-				return Ok(new
-				{
-					success = true,
-					message = "Product deleted successfully"
-				});
-			}
-			catch (KeyNotFoundException ex)
+			await _productService.DeleteProductAsync(id, seller.Id);
+
+			return Ok(new
 			{
-				return NotFound(new
-				{
-					success = false,
-					message = ex.Message
-				});
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, "Error deleting product with ID {Id}", id);
-				return StatusCode(500, new
-				{
-					success = false,
-					message = "Error deleting product",
-					error = ex.Message
-				});
-			}
+				success = true,
+				message = "Product deleted successfully"
+			});
 		}
 
 		[HttpGet("admin/all-products")]
@@ -341,5 +317,23 @@ namespace Ecommerce.API.Controllers
 			});
 		}
 
+
+		[HttpDelete("bulk-delete")]
+		[IsSeller]
+		public async Task<IActionResult> DeleteMultipleProducts([FromBody] DeleteProductsDto dto)
+		{
+			var seller = HttpContext.Items["Seller"] as Shop;
+
+			if (seller == null)
+				throw new ErrorHandler("Seller not found", 400);
+
+			await _productService.DeleteProductsAsync(dto.ProductIds, seller.Id);
+
+			return Ok(new
+			{
+				success = true,
+				message = "Products deleted successfully"
+			});
+		}
 	}
 }	

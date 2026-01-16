@@ -32,10 +32,11 @@ namespace Ecommerce.API.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<Category> Categories { get; set;}
 		public DbSet<Coupon> Coupons { get; set; }
+		public DbSet<ProductReview> ProductReviews { get; set; }
 
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder);
-        public DbSet<Conversation> Conversations { get; set; }
+		//protected override void OnModelCreating(ModelBuilder modelBuilder);
+		public DbSet<Conversation> Conversations { get; set; }
         // In ApplicationDbContext.cs
         public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -215,6 +216,38 @@ namespace Ecommerce.API.Data
                 entity.OwnsOne(m => m.Images);
             });
 
-        }
-    }
+			// PRODUCT REVIEW configuration
+			modelBuilder.Entity<ProductReview>(entity =>
+			{
+				entity.HasKey(r => r.Id);
+
+				entity.Property(r => r.Rating)
+					  .IsRequired();
+
+				entity.Property(r => r.Comment)
+					  .HasMaxLength(1000);
+
+				entity.Property(r => r.UserName)
+					  .IsRequired()
+					  .HasMaxLength(150);
+
+				// One Product -> Many Reviews
+				entity.HasOne(r => r.Product)
+					  .WithMany(p => p.Reviews)
+					  .HasForeignKey(r => r.ProductId)
+					  .OnDelete(DeleteBehavior.Cascade);
+
+				// One User -> Many Reviews
+				entity.HasOne<User>()
+					  .WithMany()
+					  .HasForeignKey(r => r.UserId)
+					  .OnDelete(DeleteBehavior.Restrict);
+
+				// Prevent duplicate reviews (1 user → 1 product)
+				entity.HasIndex(r => new { r.ProductId, r.UserId })
+					  .IsUnique();
+			});
+
+		}
+	}
 }
