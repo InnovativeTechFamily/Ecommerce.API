@@ -23,8 +23,8 @@ namespace Ecommerce.API.DTOs.Events
         [Required]
         public int Stock { get; set; }
 
-        [Required]
-        public string ShopId { get; set; } = default!;
+        //[Required] we are  use in by cookies 
+        //public string ShopId { get; set; } = default!;
 
         [Required]
         public DateTime Start_Date { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Ecommerce.API.Data;
 using Ecommerce.API.DTOs.Products;
+using Ecommerce.API.DTOs.Shop;
 using Ecommerce.API.Entities.Products;
 using Ecommerce.API.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -84,8 +85,26 @@ namespace Ecommerce.API.Services
 					CreatedAt = p.CreatedAt
 				})
 				.ToListAsync();
+            var allShop = await _context.Shops.ToListAsync();
+            products.Select(e =>
+            {
+                var shop = allShop.FirstOrDefault(s => s.Id == e.ShopId);
+                if (shop != null)
+                {
+                    e.Shop = new ShopDto
+                    {
+                        Id = shop.Id.ToString(),
+                        Name = shop.Name,
+                        AvatarUrl = shop.AvatarUrl,
+                        Description = shop.Description,
+                        CreatedAt = shop.CreatedAt
+                    };
+                }
+                return e;
+            }).ToList();
 
-			return products;
+
+            return products;
 		}
 		public async Task<ProductResponseDto> UpdateProductAsync(string productId, CreateProductDto updateProductDto)
 		{
@@ -230,7 +249,22 @@ namespace Ecommerce.API.Services
 				})
 				.ToListAsync();
 
-			return products;
+            var shop = await _context.Shops.FindAsync(shopId);
+            products.Select(e =>
+            {
+                e.Shop = new ShopDto
+                {
+                    Id = shop.Id.ToString(),
+                    Name = shop.Name,
+                    AvatarUrl = shop.AvatarUrl,
+                    Description = shop.Description,
+                    CreatedAt = shop.CreatedAt
+                };
+                return e;
+            }).ToList();
+
+
+            return products;
 		}
 
 	}

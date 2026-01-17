@@ -19,10 +19,10 @@ const ProductDetailsPage = () => {
 
   useEffect(() => {
     if (eventData !== null) {
-      const data = allEvents && allEvents.find((i) => i._id === id);
+      const data = allEvents && allEvents.find((i) => i.id === id);
       setData(data);
     } else {
-      const productData = allProducts && allProducts.find((i) => i._id === id);
+      const productData = allProducts && allProducts.find((i) => i.id === id);
       const fetchData = async () => {
         try {
           const { data } = await axios.get(

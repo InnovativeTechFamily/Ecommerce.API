@@ -32,7 +32,7 @@ const EventCardSlider = ({ data }) => {
     >
       <div className="w-full lg:w-[50%] flex justify-center items-center" style={{ height: "300px" }}> {/* Adjust image container height */}
         <img
-          src={`${data.media[0]?.url}`}
+          src={`${data.images[0]?.url}`}
           alt=""
           style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "cover" }} // Fit the image properly
         />

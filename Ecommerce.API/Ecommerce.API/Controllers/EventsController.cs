@@ -1,10 +1,15 @@
 ﻿using CloudinaryDotNet.Actions;
 using Ecommerce.API.Data;
 using Ecommerce.API.DTOs.Events;
+using Ecommerce.API.DTOs.Shop;
 using Ecommerce.API.Entities;
 using Ecommerce.API.Entities.Event;
+using Ecommerce.API.Entities.Products;
+using Ecommerce.API.Entities.Shops;
+using Ecommerce.API.Mappings;
 using Ecommerce.API.Middleware;
 using Ecommerce.API.Services;
+using Ecommerce.API.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,18 +40,8 @@ namespace Ecommerce.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // 1️⃣ Validate ShopId (Node.js: Shop.findById)
-            var shopExists = await _context.Shops
-                .AnyAsync(s => s.Id.ToString() == createEventDto.ShopId);
 
-            if (!shopExists)
-            {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = "Shop Id is invalid!"
-                });
-            }
+            var seller = HttpContext.Items["Seller"] as Shop;
 
             // 2️⃣ Validate Images (Node.js logic)
             if (createEventDto.Images == null || !createEventDto.Images.Any())
@@ -68,10 +63,10 @@ namespace Ecommerce.API.Controllers
                 OriginalPrice = createEventDto.OriginalPrice,
                 DiscountPrice = createEventDto.DiscountPrice,
                 Stock = createEventDto.Stock,
-                ShopId = createEventDto.ShopId,
+                ShopId = seller.Id.ToString(),
                 Start_Date = createEventDto.Start_Date,
                 Finish_Date = createEventDto.Finish_Date,
-                Status = "Running"
+                Status = ProductStatus.Draft.ToString()
             };
 
             // 4️⃣ Upload images (Node.js: cloudinary.uploader.upload)
@@ -79,9 +74,9 @@ namespace Ecommerce.API.Controllers
             {
                 var media = await _cloudinary.UploadBase64ImageAndCreateMediaAsync(
                     base64Image: base64,
-                    folder: "events",
-                    entityType: "Event",
-                    entityId: null
+                    folder: EntityType.Events,
+                    entityType: EntityType.Events,
+                    entityId: evt.Id
                 );
 
                 evt.Media.Add(media);
@@ -104,12 +99,27 @@ namespace Ecommerce.API.Controllers
         [HttpGet("shop/{shopId}")]
         public async Task<IActionResult> GetEventsByShop(string shopId)
         {
-            var events = await _context.Events
+            var res = await _context.Events
                 .Where(e => e.ShopId == shopId)
                 .Include(e => e.Media)
                 .OrderByDescending(e => e.CreatedAt)
                 .ToListAsync();
 
+            var events = EventMapper.ToDtoList(res);
+            Guid sellerId = Guid.Parse(shopId);
+            var shop = await _context.Shops.FindAsync(sellerId);
+            events.Select(e =>
+            {
+                e.Shop = new ShopDto
+                {
+                    Id = shop.Id.ToString(),
+                    Name = shop.Name,
+                    AvatarUrl = shop.AvatarUrl,
+                    Description = shop.Description,
+                    CreatedAt = shop.CreatedAt
+                };
+                return e;
+            }).ToList();
             return Ok(new
             {
                 success = true,
@@ -137,10 +147,31 @@ namespace Ecommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllEvents()
         {
-            var events = await _context.Events
+            var res = await _context.Events
                 .Include(e => e.Media)
                 .OrderByDescending(e => e.CreatedAt)
                 .ToListAsync();
+            var events = EventMapper.ToDtoList(res);
+
+            var allShop = await _context.Shops.ToListAsync();
+
+            events.Select(e =>
+            {
+                var shop = allShop.FirstOrDefault(s => s.Id.ToString() == e.ShopId);
+                if (shop != null)
+                {
+                    e.Shop = new ShopDto
+                    {
+                        Id = shop.Id.ToString(),
+                        Name = shop.Name,
+                        AvatarUrl = shop.AvatarUrl,
+                        Description = shop.Description,
+                        CreatedAt = shop.CreatedAt
+                    };
+                }
+                return e;
+            }).ToList();
+           
 
             return Ok(new
             {

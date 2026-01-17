@@ -1,5 +1,5 @@
 import axios from "axios";
-import { server,getAllEventsEndpoint } from "../../server";
+import { server,getAllEventsEndpoint,getAllEventsByShopEndpoint,createEventsByShopEndpoint } from "../../server";
 
 
 // create event
@@ -9,7 +9,7 @@ export const createevent = (data) => async (dispatch) => {
       type: "eventCreateRequest",
     });
 
-    const { d } = await axios.post(`${server}/event/create-event`, data);
+    const { d } = await axios.post(`${createEventsByShopEndpoint}`,data,{ withCredentials: true });
     dispatch({
       type: "eventCreateSuccess",
       payload: d.event,
@@ -29,7 +29,7 @@ export const getAllEventsShop = (id) => async (dispatch) => {
       });
   
       const { data } = await axios.get(
-        `${server}/event/get-all-events/${id}`
+        `${getAllEventsByShopEndpoint}/${id}`
       );
       dispatch({
         type: "getAlleventsShopSuccess",

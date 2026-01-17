@@ -32,8 +32,8 @@ const ProductDetails = ({ data }) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAllProductsShop(data && data?.shop._id));
-    if (wishlist && wishlist.find((i) => i._id === data?._id)) {
+    dispatch(getAllProductsShop(data && data?.shopId));
+    if (wishlist && wishlist.find((i) => i.id === data?.id)) {
       setClick(true);
     } else {
       setClick(false);
@@ -61,7 +61,7 @@ const ProductDetails = ({ data }) => {
   };
 
   const addToCartHandler = (id) => {
-    const isItemExists = cart && cart.find((i) => i._id === id);
+    const isItemExists = cart && cart.find((i) => i.id === id);
     if (isItemExists) {
       toast.error("Item already in cart!");
     } else {
@@ -76,13 +76,13 @@ const ProductDetails = ({ data }) => {
   };
   const totalReviewsLength =
     products &&
-    products.reduce((acc, product) => acc + product.reviews.length, 0);
+    products.reduce((acc, product) => acc + product?.reviews?.length, 0);
 
   const totalRatings =
     products &&
     products.reduce(
       (acc, product) =>
-        acc + product.reviews.reduce((sum, review) => sum + review.rating, 0),
+        acc + product.reviews?.reduce((sum, review) => sum + review.rating, 0),
       0
     );
 
@@ -92,9 +92,9 @@ const ProductDetails = ({ data }) => {
 
   const handleMessageSubmit = async () => {
     if (isAuthenticated) {
-      const groupTitle = data._id + user._id;
-      const userId = user._id;
-      const sellerId = data.shop._id;
+      const groupTitle = data.id + user.id;
+      const userId = user.id;
+      const sellerId = data.shopId;
       await axios
         .post(`${server}/conversation/create-new-conversation`, {
           groupTitle,
@@ -102,7 +102,7 @@ const ProductDetails = ({ data }) => {
           sellerId,
         })
         .then((res) => {
-          navigate(`/inbox?${res.data.conversation._id}`);
+          navigate(`/inbox?${res.data.conversation.id}`);
         })
         .catch((error) => {
           toast.error(error.response.data.message);
@@ -206,22 +206,22 @@ const ProductDetails = ({ data }) => {
                 </div>
                 <div
                   className={`${styles.button} mt-6 !rounded-[4px] !h-11 flex items-center`}
-                  onClick={() => addToCartHandler(data._id)}
+                  onClick={() => addToCartHandler(data.id)}
                 >
                   <span className="text-[#fff] flex items-center">
                     Add to cart <AiOutlineShoppingCart className="ml-1" />
                   </span>
                 </div>
                 <div className="flex items-center pt-8">
-                  <Link to={`/shop/preview/${data?.shop._id}`}>
+                  <Link to={`/shop/preview/${data?.shopId}`}>
                     <img
-                      src={`${data?.shop?.avatar?.url}`}
+                      src={`${data?.shop?.avatarUrl}`}
                       alt=""
                       className="w-[50px] h-[50px] rounded-full mr-2"
                     />
                   </Link>
                   <div className="pr-8">
-                    <Link to={`/shop/preview/${data?.shop._id}`}>
+                    <Link to={`/shop/preview/${data?.shop.id}`}>
                       <h3 className={`${styles.shop_name} pb-1 pt-1`}>
                         {data.shop.name}
                       </h3>
@@ -346,22 +346,22 @@ const ProductDetailsInfo = ({
       {active === 3 && (
         <div className="w-full block 800px:flex p-5">
           <div className="w-full 800px:w-[50%]">
-            <Link to={`/shop/preview/${data.shop._id}`}>
+            <Link to={`/shop/preview/${data.shop?.id}`}>
               <div className="flex items-center">
                 <img
-                  src={`${data?.shop?.avatar?.url}`}
+                  src={`${data?.shop?.avatarUrl}`}
                   className="w-[50px] h-[50px] rounded-full"
                   alt=""
                 />
                 <div className="pl-3">
-                  <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
+                  <h3 className={`${styles.shop_name}`}>{data.shop?.name}</h3>
                   <h5 className="pb-2 text-[15px]">
                     ({averageRating}/5) Ratings
                   </h5>
                 </div>
               </div>
             </Link>
-            <p className="pt-2">{data.shop.description}</p>
+            <p className="pt-2">{data.shop?.description}</p>
           </div>
           <div className="w-full 800px:w-[50%] mt-5 800px:mt-0 800px:flex flex-col items-end">
             <div className="text-left">
@@ -381,7 +381,7 @@ const ProductDetailsInfo = ({
                 Total Reviews:{" "}
                 <span className="font-[500]">{totalReviewsLength}</span>
               </h5>
-              <Link to={`/shop/preview/${data.shop._id}`}>
+              <Link to={`/shop/preview/${data.shop.id}`}>
                 <div
                   className={`${styles.button} !rounded-[4px] !h-[39.5px] mt-3`}
                 >
