@@ -1,5 +1,5 @@
 import axios from "axios";
-import { server, getAllProductsEndpoint } from "../../server";
+import { server, getAllProductsEndpoint,getAllShopProducts } from "../../server";
 
 // create product
 export const createProduct =
@@ -101,7 +101,7 @@ export const getAllProductsShop = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${server}/product/get-all-products-shop/${id}`
+      `${getAllShopProducts}/${id}`
     );
     dispatch({
       type: "getAllProductsShopSuccess",

@@ -340,8 +340,28 @@ namespace Ecommerce.API.Controllers
 		public async Task<IActionResult> GetAllProductsByShop(Guid id)
 		{
 			var products = await _productService.GetProductsByShopAsync(id);
+            var productmedias = await _mediaService.GetByFolderAsync(EntityType.Products);
+            List<ProductImageResponseDto> img = new List<ProductImageResponseDto>();
+            foreach (var pro in products)
+			{
+				foreach(var item in productmedias)
+				{
+					if(pro.Id == item.EntityId)
+					{
+                        var im = new ProductImageResponseDto
+                        {
+                            Id = item.Id,
+                            PublicId = item.PublicId,
+                            Url = item.Url
+                        };
+                        
+                        img.Add(im);
+                        pro.Images = img;
+                    }
+                }
+            }
 
-			return Ok(new
+            return Ok(new
 			{
 				success = true,
 				products

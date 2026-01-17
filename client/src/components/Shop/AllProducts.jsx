@@ -210,7 +210,7 @@ const AllProducts = () => {
   products &&
     products.forEach((item) => {
       row.push({
-        id: item._id,
+        id: item.id,
         name: item.name,
         price: "₱ " + item.discountPrice,
         Stock: item.stock,

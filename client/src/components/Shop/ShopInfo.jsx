@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { backend_url, server,shopInfoEnpoint } from "../../server";
+import { backend_url, server,shopInfoEnpoint,shopLogout } from "../../server";
 import styles from "../../styles/styles";
 import Loader from "../Layout/Loader";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +30,7 @@ const ShopInfo = ({ isOwner }) => {
   
 
   const logoutHandler = async () => {
-    axios.get(`${server}/shop/logout`,{
+    axios.get(`${shopLogout}`,{
       withCredentials: true,
     }).then((res) => {
       console.log(res.data.message);

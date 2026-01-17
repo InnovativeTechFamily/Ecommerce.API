@@ -30,6 +30,8 @@ export const shopDetailEnpoint =dotnetserver+"/api/Shop/getSeller";
 export const shopInfoEnpoint =dotnetserver+"/api/Shop/get-shop-info";
 export const updateShopAvatarEnpoint =dotnetserver+"/api/Shop/update-shop-avatar";
 export const updateShopInfoEnpoint =dotnetserver+"/api/Shop/update-seller-info";
+export const shopLogout =dotnetserver+"/api/Shop/logout";
+export const getAllShopProducts =dotnetserver+"/api/Products/get-all-products-shop";
 //Order
 
 export const getAllOrdersEndpoint=dotnetserver+"/api/Orders/get-seller-all-orders";
