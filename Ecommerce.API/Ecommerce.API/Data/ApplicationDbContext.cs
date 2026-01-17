@@ -23,15 +23,16 @@ namespace Ecommerce.API.Data
         public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<Avatar> Avatars { get; set; }
 
-		public DbSet<Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
         public DbSet<Shop> Shops { get; set; }           // Add Shops
         public DbSet<ShopTransaction> ShopTransactions { get; set; }  // Add Transactions
         public DbSet<Event> Events { get; set; }
 
         public DbSet<Media> Media { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Category> Categories { get; set;}
-		public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<ProductReview> ProductReviews { get; set; }
 
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder);
@@ -226,6 +227,42 @@ namespace Ecommerce.API.Data
                 entity.OwnsOne(w => w.Seller);
             });
 
+
+            // PRODUCT REVIEW configuration
+            modelBuilder.Entity<ProductReview>(entity =>
+            {
+                entity.HasKey(r => r.Id);
+
+                entity.Property(r => r.Rating)
+                      .IsRequired();
+
+                entity.Property(r => r.Comment)
+                      .HasMaxLength(1000);
+
+                entity.Property(r => r.UserName)
+                      .IsRequired()
+                      .HasMaxLength(150);
+
+                // One Product -> Many Reviews
+                entity.HasOne(r => r.Product)
+                      .WithMany(p => p.Reviews)
+                      .HasForeignKey(r => r.ProductId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // One User -> Many Reviews
+                entity.HasOne<User>()
+                      .WithMany()
+                      .HasForeignKey(r => r.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Prevent duplicate reviews (1 user → 1 product)
+                entity.HasIndex(r => new { r.ProductId, r.UserId })
+                      .IsUnique();
+            });
+
         }
     }
+
+
 }
+

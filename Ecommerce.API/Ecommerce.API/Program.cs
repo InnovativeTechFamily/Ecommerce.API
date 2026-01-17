@@ -43,6 +43,8 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IConversationService, ConversationService>();
 builder.Services.AddScoped<IMessagesService, MessagesService>();
 builder.Services.AddScoped<IWithdrawService, WithdrawService>();
+builder.Services.AddScoped<IProductReviewService, ProductReviewService>();
+
 
 // Add CORS
 builder.Services.AddCors(options =>
