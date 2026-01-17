@@ -1,0 +1,68 @@
+# Validate last commit message subject follows Conventional Commit types
+# Checks the commit subject (first line) against:
+# feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert
+#
+# Example valid: feat(auth): add JWT refresh token
+# Example invalid: Added login feature
+
+name: Validate commit message
+
+on:
+  push:
+    # runs on any push; you can ignore branches if desired
+    # branches-ignore:
+    #   - 'main'
+    #   - 'develop'
+  pull_request:
+    # run for PRs so the check shows on PRs created from non-conforming branches
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # need full history to read commits reliably
+
+      - name: Get commit subject (first line)
+        id: get_subject
+        run: |
+          # For both push and pull_request events, the HEAD commit is the one we want to validate.
+          # Using %s returns the subject (first line) of the commit message.
+          SUBJECT="$(git log -1 --pretty=%s)"
+          echo "Commit subject: '$SUBJECT'"
+          # Expose to next steps
+          echo "subject<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$SUBJECT" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Validate commit subject format
+        run: |
+          SUBJECT="${{ steps.get_subject.outputs.subject }}"
+
+          echo "Validating commit subject: $SUBJECT"
+
+          # Allowed types:
+          # feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert
+          # Optional scope: (scope)
+          # Must be followed by ":" then a space and a non-empty subject
+          REGEX='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\([a-z0-9_.-]+\))?:[[:space:]]+.+$'
+
+          if [[ "$SUBJECT" =~ $REGEX ]]; then
+            echo "✅ Commit subject matches Conventional Commit format."
+          else
+            echo "::error title=Invalid commit message::Commit subject does NOT follow Conventional Commit format."
+            echo "::error ::Required format: type(scope)?: subject"
+            echo "::error ::Allowed types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert"
+            echo "::error ::Example valid: feat(auth): add JWT refresh token"
+            echo "::error ::Examples invalid: Added login feature | Merge branch 'feature-xyz' into dev | feature: missing (use feat)"
+            # Optionally, you could allow merge commits by detecting "Merge" and skipping the check.
+            # If you'd like that behavior, remove the above exit and uncomment the block below to allow merge commits:
+            # if [[ "$SUBJECT" =~ ^Merge ]]; then
+            #   echo "Skipping validation for merge commit."
+            #   exit 0
+            # fi
+            exit 1
+          fi
