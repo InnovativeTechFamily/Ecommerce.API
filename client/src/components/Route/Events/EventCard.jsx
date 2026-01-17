@@ -37,7 +37,7 @@ const EventCard = ({active,dataList }) => {
           } lg:flex p-2`}
         >
           <div className="w-full lg:-w[50%] m-auto flex justify-center items-center">
-            <img src={`${data.media[0]?.url}`} alt={data.name} />
+            <img src={`${data.images[0]?.url}`} alt={data.name} />
           </div>
           <div className="w-full lg:[w-50%] flex flex-col justify-center">
             <h2 className={`${styles.productTitle}`}>{data.name}</h2>

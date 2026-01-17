@@ -47,6 +47,8 @@ export const getAllProductsEndpoint=dotnetserver+"/api/Products/GetAllProduct";
 
 //events
 export const getAllEventsEndpoint=dotnetserver+"/api/Events";
+export const getAllEventsByShopEndpoint=dotnetserver+"/api/Events/shop";
+export const createEventsByShopEndpoint=dotnetserver+"/api/Events";
 
 
 

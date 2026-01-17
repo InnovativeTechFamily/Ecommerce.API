@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ecommerce.API.DTOs.Shop;
+using System;
 using System.Collections.Generic;
 
 namespace Ecommerce.API.DTOs.Products
@@ -16,8 +17,8 @@ namespace Ecommerce.API.DTOs.Products
 		public List<ProductImageResponseDto>? Images { get; set; }
 		public decimal? Ratings { get; set; }
 		public Guid ShopId { get; set; }
-		public object? Shop { get; set; }
-		public int SoldOut { get; set; }
+        public ShopDto? Shop { get; set; }
+        public int SoldOut { get; set; }
 		public int Status { get; set; }
 		public bool IsPublished { get; set; }
 		public DateTime CreatedAt { get; set; }

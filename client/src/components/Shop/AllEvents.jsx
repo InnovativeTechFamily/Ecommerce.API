@@ -15,7 +15,7 @@ const AllEvents = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllEventsShop(seller._id));
+    dispatch(getAllEventsShop(seller.id));
   }, [dispatch]);
 
   const handleDelete = (id) => {
@@ -100,7 +100,7 @@ const AllEvents = () => {
   events &&
   events.forEach((item) => {
       row.push({
-        id: item._id,
+        id: item.id,
         name: item.name,
         price: '₱ ' + item.discountPrice,
         Stock: item.stock,
