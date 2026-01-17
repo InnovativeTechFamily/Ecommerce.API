@@ -22,6 +22,7 @@ export const getUser =dotnetserver+"/api/Users/getUser";
 export const activation =dotnetserver+"/api/Users/activation";
 export const uploadAvatar =dotnetserver+"/api/Users/upload-avatar";
 export const logout =dotnetserver+"/api/Users/logout";
+export const updateUserInfo =dotnetserver+"/api/Users/update-user-info";
 //shop
 export const shopCreateEndpoint =dotnetserver+"/api/Shop/create-shop";
 export const shopActivationEndpoint =dotnetserver+"/api/Shop/activation";

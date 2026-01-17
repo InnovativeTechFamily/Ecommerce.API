@@ -353,7 +353,7 @@ namespace Ecommerce.API.Controllers
             }
         }
         //  [Authorize]
-        [HttpPost("upload-avatar")]
+        [HttpPut("upload-avatar")]
         [IsAuthenticated]
         public async Task<IActionResult> UploadAvatar([FromBody] AvatarUploadDto avatarDto)
         {
