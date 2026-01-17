@@ -1,0 +1,38 @@
+name: Validate branch name on push
+
+on:
+  push:   # runs for pushes to any branch
+    # Optionally exclude protected main branches by using `branches-ignore`:
+    # branches-ignore:
+    #   - 'main'
+    #   - 'dev'
+    #   - 'release/*'
+
+jobs:
+  validate-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Validate branch name
+        run: |
+          # Extract branch name from the ref (refs/heads/<branch>)
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          echo "Branch pushed: $BRANCH_NAME"
+
+          # Regex:
+          # - start with users/
+          # - username: lowercase letters/digits and dots (e.g. avinash.gupta)
+          # - slash
+          # - title-of-work: lowercase letters/digits, segments separated by ., _, or -
+          REGEX='^users/[a-z0-9]+(\.[a-z0-9]+)*/[a-z0-9]+([._-][a-z0-9]+)*$'
+
+          if [[ $BRANCH_NAME =~ $REGEX ]]; then
+            echo "✅ Branch name matches required format."
+          else
+            echo "::error ::Branch name '$BRANCH_NAME' does NOT match the required format: users/<username>/<title-of-work>"
+            echo "::error ::Example valid branch: users/avinash.gupta/title-of-work"
+            echo "Please rename your branch to: users/<your.username>/<short-description> (lowercase; username may include dots; title may include -, _, .)"
+            exit 1
+          fi
