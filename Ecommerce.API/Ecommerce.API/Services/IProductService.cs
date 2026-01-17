@@ -13,7 +13,6 @@ namespace Ecommerce.API.Services
 		Task<ProductResponseDto> UpdateProductAsync(string productId, CreateProductDto updateProductDto);
 		Task<bool> DeleteProductAsync(string productId);
 		Task<List<ProductResponseDto>> GetProductsByShopAsync(Guid shopId);
-    	Task<ProductResponseDto> UpdateProductAsync(string productId, CreateProductDto updateProductDto);
 		Task DeleteProductAsync(string productId, Guid shopId);
 		Task DeleteProductsAsync(List<string> productIds, Guid shopId);
 
