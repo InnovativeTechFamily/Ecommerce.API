@@ -43,7 +43,7 @@ const EditProduct = () => {
 
   // Filter product based on productId
   useEffect(() => {
-    const productToUpdate = products?.find((product) => product._id === id);
+    const productToUpdate = products?.find((product) => product.id ===id);
     if (productToUpdate) {
       setName(productToUpdate.name);
       setDescription(productToUpdate.description);
@@ -100,8 +100,9 @@ const EditProduct = () => {
     // Overwrite existing image data with new image data
     setImages(imageNew);
     dispatch(
-      updateProduct({
+      updateProduct(
         id,
+        {
         name,
         description,
         category,
@@ -110,7 +111,7 @@ const EditProduct = () => {
         discountPrice,
         stock,
         status: editedStatus || status, // Use editedStatus if available, otherwise use status
-        shopId: seller._id,
+        shopId: seller.id,
         images,
         isPublished,
       })
