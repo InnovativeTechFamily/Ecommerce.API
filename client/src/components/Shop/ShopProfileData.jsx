@@ -81,7 +81,7 @@ const ShopProfileData = ({ isOwner }) => {
               <ProductCard data={i} key={index} isShop={true} />
             ))}
         </div>
-         {products && products.length === 0 && (
+         {products && products?.length === 0 && (
             <h5 className="w-full text-center py-5 text-[18px]">
               No products have for this shop!
             </h5>
@@ -102,7 +102,7 @@ const ShopProfileData = ({ isOwner }) => {
                 />
               ))}
           </div>
-          {events && events.length === 0 && (
+          {events && events?.length === 0 && (
             <h5 className="w-full text-center py-5 text-[18px]">
               No Events have for this shop!
             </h5>
@@ -131,7 +131,7 @@ const ShopProfileData = ({ isOwner }) => {
                 </div>
               </div>
             ))}
-          {allReviews && allReviews.length === 0 && (
+          {allReviews && allReviews?.length === 0 && (
             <h5 className="w-full text-center py-5 text-[18px]">
               No Reviews have for this shop!
             </h5>
