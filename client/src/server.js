@@ -45,6 +45,7 @@ export const updateOrderRefundSuccessEndpoint=dotnetserver+"/api/Orders/order-re
 
 //product
 export const getAllProductsEndpoint=dotnetserver+"/api/Products/GetAllProduct";
+export const updateProductEndpoint=dotnetserver+"/api/Products";
 
 //events
 export const getAllEventsEndpoint=dotnetserver+"/api/Events";

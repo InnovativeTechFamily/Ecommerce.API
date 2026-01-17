@@ -1,5 +1,10 @@
 import axios from "axios";
-import { server, getAllProductsEndpoint,getAllShopProducts } from "../../server";
+import {
+  server,
+  getAllProductsEndpoint,
+  getAllShopProducts,
+  updateProductEndpoint,
+} from "../../server";
 
 // create product
 export const createProduct =
@@ -12,7 +17,7 @@ export const createProduct =
     discountPrice,
     stock,
     shopId,
-    images
+    images,
   ) =>
   async (dispatch) => {
     try {
@@ -30,7 +35,7 @@ export const createProduct =
         discountPrice,
         stock,
         shopId,
-        images
+        images,
       );
       dispatch({
         type: "productCreateSuccess",
@@ -48,7 +53,8 @@ export const createProduct =
 export const updateProduct =
   (
     id,
-    name,
+    {
+      name,
     description,
     category,
     tags,
@@ -58,7 +64,8 @@ export const updateProduct =
     status,
     shopId,
     images,
-    isPublished
+    isPublished,
+    }
   ) =>
   async (dispatch) => {
     try {
@@ -66,20 +73,22 @@ export const updateProduct =
         type: "productUpdateRequest",
       });
 
-      const { data } = await axios.post(
-        `${server}/product/update-product`,
-        id,
-        name,
-        description,
-        category,
-        tags,
-        originalPrice,
-        discountPrice,
-        stock,
-        status,
-        shopId,
-        images,
-        isPublished
+      const { data } = await axios.put(
+        `${updateProductEndpoint}/${id}`,
+        {
+          name,
+          description,
+          category,
+          tags,
+          originalPrice,
+          discountPrice,
+          stock,
+          status,
+          shopId,
+          images,
+          isPublished,
+        },
+        { withCredentials: true },
       );
       dispatch({
         type: "productUpdateSuccess",
@@ -100,9 +109,7 @@ export const getAllProductsShop = (id) => async (dispatch) => {
       type: "getAllProductsShopRequest",
     });
 
-    const { data } = await axios.get(
-      `${getAllShopProducts}/${id}`
-    );
+    const { data } = await axios.get(`${getAllShopProducts}/${id}`);
     dispatch({
       type: "getAllProductsShopSuccess",
       payload: data.products,
@@ -125,7 +132,7 @@ export const deleteProduct = (id) => async (dispatch) => {
 
     const { data } = await axios.delete(
       `${server}/product/delete-shop-product/${id}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
 
     dispatch({
@@ -151,7 +158,7 @@ export const getAllProducts =
       });
 
       const { data } = await axios.get(
-        `${getAllProductsEndpoint}?page=${page}&limit=${limit}`
+        `${getAllProductsEndpoint}?page=${page}&limit=${limit}`,
       );
       dispatch({
         type: "getAllProductsSuccess",
