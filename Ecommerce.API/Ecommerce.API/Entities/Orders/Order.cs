@@ -44,7 +44,8 @@ namespace Ecommerce.API.Entities.Orders
 
         public string ShopId { get; set; } = default!;
         public string ShopName { get; set; } = default!;
-    }
+		public bool IsReviewed { get; set; } = false;
+	}
 
     public class ShippingAddress
     {
@@ -80,5 +81,7 @@ namespace Ecommerce.API.Entities.Orders
         public string? Status { get; set; }
         public string? Type { get; set; }
     }
+
+
 
 }

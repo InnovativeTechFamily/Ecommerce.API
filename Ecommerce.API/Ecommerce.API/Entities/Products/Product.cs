@@ -46,9 +46,13 @@ namespace Ecommerce.API.Entities.Products
 		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 		public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        public virtual Shop Shop { get; set; } 
+        public virtual Shop Shop { get; set; }
 
-    }
+		public ICollection<ProductReview> Reviews { get; set; } = new List<ProductReview>();
+
+		public double Ratings { get; set; }
+
+	}
 
     public enum ProductStatus
 	{
@@ -58,4 +62,6 @@ namespace Ecommerce.API.Entities.Products
 		Archived = 3,
 		Discontinued = 4
 	}
+
+
 }

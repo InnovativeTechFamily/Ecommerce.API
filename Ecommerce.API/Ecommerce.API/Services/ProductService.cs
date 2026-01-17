@@ -1,6 +1,7 @@
 ﻿using Ecommerce.API.Data;
 using Ecommerce.API.DTOs.Products;
 using Ecommerce.API.Entities.Products;
+using Ecommerce.API.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API.Services
@@ -62,6 +63,8 @@ namespace Ecommerce.API.Services
 			};
 		}
 
+
+
 		public async Task<List<ProductResponseDto>> GetAllProductsAsync()
 		{
 			var products = await _context.Products
@@ -113,7 +116,7 @@ namespace Ecommerce.API.Services
 			// Always update discount price if provided (it's required in DTO)
 			product.DiscountPrice = updateProductDto.DiscountPrice;
 
-			if (updateProductDto.Stock >= 0) // Assuming stock can't be negative
+			if (updateProductDto.Stock > 0) // Assuming stock can't be negative
 				product.Stock = updateProductDto.Stock;
 
 			//if (updateProductDto.ShopId)
@@ -147,25 +150,65 @@ namespace Ecommerce.API.Services
 			};
 		}
 
-		public async Task<bool> DeleteProductAsync(string productId)
+		public async Task DeleteProductAsync(string productId, Guid sellerShopId)
 		{
 			var product = await _context.Products
 				.FirstOrDefaultAsync(p => p.Id == productId);
 
 			if (product == null)
-			{
-				throw new KeyNotFoundException($"Product with ID {productId} not found");
-			}
+				throw new KeyNotFoundException("Product not found");
 
-			// Soft delete: Change status to Archived
-			//product.Status = ProductStatus.Archived;
-			//product.UpdatedAt = DateTime.UtcNow;
+			// 🔐 Seller ownership check
+			if (product.ShopId != sellerShopId)
+				throw new UnauthorizedAccessException(
+					"You are not allowed to delete this product"
+				);
 
-			// OR Hard delete: Remove from database
-			 _context.Products.Remove(product);
-
+			_context.Products.Remove(product);
 			await _context.SaveChangesAsync();
-			return true;
 		}
+
+
+		public async Task<List<ProductResponseDto>> GetProductByShopAsync(Guid sellerId)
+		{
+
+			var products = await _context.Products
+				.OrderByDescending(p => p.CreatedAt) // Latest first
+				.Select(p => new ProductResponseDto
+				{
+					Id = p.Id,
+					Name = p.Name,
+					Description = p.Description,
+					Category = p.Category,
+					Tags = p.Tags,
+					OriginalPrice = p.OriginalPrice,
+					DiscountPrice = p.DiscountPrice,
+					Stock = p.Stock,
+					ShopId = p.ShopId,
+					Status = (int)p.Status,
+					CreatedAt = p.CreatedAt
+				})
+				.ToListAsync();
+
+			return products;
+		}
+
+		public async Task DeleteProductsAsync(List<string> productIds, Guid shopId)
+		{
+			if (productIds == null || productIds.Count == 0)
+				throw new ErrorHandler("Product IDs are required", 400);
+
+			var products = await _context.Products
+				.Where(p => productIds.Contains(p.Id) && p.ShopId == shopId)
+				.ToListAsync();
+
+			if (products.Count == 0)
+				throw new ErrorHandler("No products found for deletion", 404);
+
+			_context.Products.RemoveRange(products);
+			await _context.SaveChangesAsync();
+		}
+
+
 	}
 }

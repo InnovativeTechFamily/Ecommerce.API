@@ -4,6 +4,7 @@ using Ecommerce.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260115121617_AddIsReviewedToOrderItem")]
+    partial class AddIsReviewedToOrderItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -548,42 +551,11 @@ namespace Ecommerce.API.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("WithdrawId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ShopId");
 
                     b.ToTable("ShopTransactions");
-                });
-
-            modelBuilder.Entity("Ecommerce.API.Entities.Shops.Withdraw", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("Processing");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Withdraws");
                 });
 
             modelBuilder.Entity("Ecommerce.API.Entities.Users.Avatar", b =>
@@ -919,36 +891,6 @@ namespace Ecommerce.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Shop");
-                });
-
-            modelBuilder.Entity("Ecommerce.API.Entities.Shops.Withdraw", b =>
-                {
-                    b.OwnsOne("Ecommerce.API.Entities.Shops.WithdrawSeller", "Seller", b1 =>
-                        {
-                            b1.Property<string>("WithdrawId")
-                                .HasColumnType("nvarchar(450)");
-
-                            b1.Property<string>("Email")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Id")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("WithdrawId");
-
-                            b1.ToTable("Withdraws");
-
-                            b1.WithOwner()
-                                .HasForeignKey("WithdrawId");
-                        });
-
-                    b.Navigation("Seller")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Ecommerce.API.Entities.Users.Avatar", b =>
