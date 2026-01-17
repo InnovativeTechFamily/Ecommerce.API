@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getUser, server,shopDetailEnpoint } from "../../server";
+import { getUser, server,shopDetailEnpoint ,updateUserInfo} from "../../server";
 
 // load user
 export const loadUser = () => async (dispatch) => {
@@ -51,7 +51,7 @@ export const updateUserInformation =
       });
 
       const { data } = await axios.put(
-        `${server}/user/update-user-info`,
+        `${updateUserInfo}`,
         {
           email,
           password,
